@@ -1,0 +1,54 @@
+Format:
+Relational Schema
+FD
+Decomposed Schema
+...
+
+customer   (customer_id, mobile_no, email, username, password, privilege)
+customer_id-->mobile_no,email,username,password,privilege;
+username-->customer_id,mobile_no,email,password,privilege;
+customer   (customer_id, mobile_no, email, username, password, privilege)
+
+address    (customer_id,address,latitude,longitude)
+address-->latitude,longitude;
+latitude,longitude-->address;
+latlong -- Common to restaurant
+address    (customer_id, address)
+
+restaurant (restaurant_id, mobile_no, email, username, password, overall_discount, max_safety_follow, open_time, close_time, latitude, longitude, address, avg_cost_for_two)
+restaurant_id-->mobile_no,email,username,password,overall_discount,max_safety_follow,open_time,close_time,latitude,longitude,address,avg_cost_for_two;
+username-->restaurant_id,mobile_no,email,password,overall_discount,max_safety_follow,open_time,close_time,latitude,longitude,address,avg_cost_for_two;
+latitude,longitude-->address;
+address-->latitude,longitude;
+restaurant (restaurant_id, mobile_no, email, username, password, overall_discount, max_safety_follow, open_time, close_time, address, avg_cost_for_two)
+latlong    (address, latitude, longitude)
+
+delivery   (delivery_id, mobile_no, email, username, password, available, vaccination_status)
+delivery_id-->mobile_no, email, username, password, available, vaccination_status;
+username-->delivery_id,mobile_no, email, password, available, vaccination_status;
+delivery   (delivery_id, mobile_no, email, username, password, available, vaccination_status)
+
+order      (order_id, customer_id, order_place_time, expected_delivery_time, actual_delivery_time, restaurant_review, restaurant_rating)
+order_id,customer_id-->order_place_time,expected_delivery_time,actual_delivery_time,restaurant_review,restaurant_rating;
+order      (order_id, customer_id, order_place_time, expected_delivery_time, actual_delivery_time, restaurant_review, restaurant_rating)
+
+foodItems  (restaurant_id, name, available, type, preparation_time, specific_discount, course_type, cost)
+restaurant_id,name-->available,type,preparation_time,specific_discount,course_type,cost;
+name-->type,course_type;
+foodTypes  (name, type, course_type)
+foodItems  (restaurant_id, name, available, preparation_time, specific_discount, cost)
+
+favourite  (customer_id, restaurant_id)
+customer_id,restaurant_id-->customer_id,restaurant_id;
+favourite  (customer_id, restaurant_id)
+  
+orderHas   (order_id, customer_id, restaurant_id, name, quantity, food_review, food_rating)
+order_id,customer_id,name-->quantity,food_review,food_rating;
+order_id,customer_id-->restaurant_id;
+orderRest  (order_id, customer_id, restaurant_id)
+orderHas   (order_id, customer_id, name, quantity, food_review, food_rating)
+
+orderTaken (order_id, customer_id, delivery_id, delivery_review, delivery_rating)
+order_id,customer_id,delivery_id-->delivery_review,delivery_rating;
+orderTaken (order_id, customer_id, delivery_id, delivery_review, delivery_rating)
+
