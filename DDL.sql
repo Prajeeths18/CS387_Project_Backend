@@ -86,7 +86,7 @@ CREATE TABLE delivery (
     mobile_no integer NOT NULL,
     email varchar(254), --delivery email can be null, this means the delivery partner did not provide an email--
     available BOOLEAN NOT NULL,
-    vaccination_status roles NOT NULL,
+    vaccination_status doses NOT NULL,
     primary key(delivery_id),
     foreign key(delivery_id) references gen_user on delete cascade
 );
