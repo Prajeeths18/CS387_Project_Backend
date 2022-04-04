@@ -27,7 +27,7 @@ DROP TABLE IF EXISTS customer CASCADE;
 
 CREATE TABLE customer (
     customer_id bigserial NOT NULL,
-    mobile_no integer NOT NULL,
+    mobile_no bigint NOT NULL,
     email varchar(254), --customer email can be null, this means they did not provide an email--
     subscription boolean default false NOT NULL,
     primary key(customer_id),
@@ -51,7 +51,7 @@ DROP TABLE IF EXISTS restaurant CASCADE;
 CREATE TABLE restaurant (
     restaurant_id bigserial NOT NULL,
     restaurant_name varchar(256) NOT NULL,
-    mobile_no integer NOT NULL,
+    mobile_no bigint NOT NULL,
     email varchar(254), --restaurant email can be null, this means they did not provide an email--
     overall_discount float NOT NULL,
     max_safety_follow boolean NOT NULL,
@@ -83,7 +83,7 @@ DROP TABLE IF EXISTS delivery CASCADE;
 
 CREATE TABLE delivery (
     delivery_id bigserial NOT NULL,
-    mobile_no integer NOT NULL,
+    mobile_no bigint NOT NULL,
     email varchar(254), --delivery email can be null, this means the delivery partner did not provide an email--
     available BOOLEAN default false NOT NULL,
     vaccination_status doses NOT NULL,
@@ -92,7 +92,7 @@ CREATE TABLE delivery (
 );
 
 -- ORDER TABLE --
-DROP TABLE IF EXISTS food_order;
+DROP TABLE IF EXISTS food_order CASCADE;
 
 CREATE TABLE food_order (
     order_id integer NOT NULL,
@@ -102,12 +102,15 @@ CREATE TABLE food_order (
     actual_delivery_time timestamp with time zone NOT NULL,
     restaurant_review TEXT, --restaurant review can be null, it means that the customer associated with the order did not write a review for the restaurant--
     restaurant_rating rating, --restaurant rating can be null, it means that the customer associated with the order did not submit a rating for the restaurant--
+    latitude float NOT NULL,
+    longitude float NOT NULL,
     foreign key(customer_id) references customer on delete cascade,
+    foreign key(latitude, longitude) references coordinates (latitude, longitude) on delete no action,
     primary key(order_id, customer_id)
 );
 
 -- FAVORITES TABLE --
-DROP TABLE IF EXISTS favorites;
+DROP TABLE IF EXISTS favorites CASCADE;
 
 CREATE TABLE favorites (
     customer_id bigserial NOT NULL,
@@ -118,7 +121,7 @@ CREATE TABLE favorites (
 );
 
 -- FOOD TYPES TABLE --
-DROP TABLE IF EXISTS food_type;
+DROP TABLE IF EXISTS food_type CASCADE;
 
 create table food_type (
     food_name varchar(256) NOT NULL,
@@ -128,7 +131,7 @@ create table food_type (
 );
 
 -- FOOD ITEMS TABLE --
-DROP TABLE IF EXISTS food_items;
+DROP TABLE IF EXISTS food_items CASCADE;
 
 create table food_items (
     restaurant_id bigserial NOT NULL,
@@ -147,7 +150,7 @@ create table food_items (
 
 
 -- ORDERED RESTAURANT TABLE --
-DROP TABLE IF EXISTS order_restaurant;
+DROP TABLE IF EXISTS order_restaurant CASCADE;
 
 CREATE TABLE order_restaurant (
     order_id integer NOT NULL,
@@ -161,7 +164,7 @@ CREATE TABLE order_restaurant (
 -- the customer will still want to see food_order history
 
 -- ORDER HAS TABLE --
-DROP TABLE IF EXISTS order_has;
+DROP TABLE IF EXISTS order_has CASCADE;
 
 create table order_has(
     order_id integer NOT NULL,
@@ -177,7 +180,7 @@ create table order_has(
 -- The restaurant still wants to view their reviews
 
 -- ORDER TAKEN TABLE --
-DROP TABLE IF EXISTS order_taken;
+DROP TABLE IF EXISTS order_taken CASCADE;
 
 create table order_taken(
     order_id integer NOT NULL,

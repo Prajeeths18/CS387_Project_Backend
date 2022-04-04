@@ -75,19 +75,19 @@ delivery_id_list = np.nonzero(roles == 2)[0]
 role_map = {0: "CUSTOMER", 1: "RESTAURANT", 2:"DELIVERY"}
 
 def escape(raw):
-    return raw.replace("'",r"\'").replace('"',"\'")
+    return raw.replace("'",'').replace('"','')
 
 usernames = []
 with open(os.path.join(dirpath,f"random_sources/users.txt"),"r") as f:
     usernames = f.readlines()
 usernames = [username.replace("\n","") for username in usernames]
 
-users = [ f'("{escape(usernames[_])}","{passwords[_]}","{role_map[roles[_]]}")' for _ in range(NUMBER_OF_USERS)]
+users = [ f"('{escape(usernames[_])}','{passwords[_]}','{role_map[roles[_]]}')" for _ in range(NUMBER_OF_USERS)]
 
 del roles
 
 for page in _paginate(users,page_size=100):
-    sql.write("INSERT INTO TABLE gen_user (username,password,role) VALUES "+",".join(page)+";\n")
+    sql.write("INSERT INTO gen_user (username,password,role) VALUES "+",".join(page)+";\n")
 
 users.clear()
 del users
@@ -101,34 +101,52 @@ mobiles = open(os.path.join(dirpath,"random_sources/mobile.txt"),"r")
 Insertion to customers
 """
 
-customers = [f'({_+1},{mobiles.readline()[:-1]},"{escape(usernames[_])}@gmail.com")' for _ in customer_id_list]
+customers = [f"({_+1},{mobiles.readline()[:-1]},'{escape(usernames[_])}@gmail.com')" for _ in customer_id_list]
 
 for page in _paginate(customers,page_size=100):
-    sql.write("INSERT INTO TABLE customer (customer_id,mobile_no,email) VALUES "+",".join(page)+";\n")
+    sql.write("INSERT INTO customer (customer_id,mobile_no,email) VALUES "+",".join(page)+";\n")
 
 customers.clear()
 del customers
 
 doses = np.random.choice([0,1,2],size=np.size(delivery_id_list),p=[0.2,0.5,0.3])
-delivery = [f'({delivery_id_list[_]+1},{mobiles.readline()[:-1]},"{escape(usernames[delivery_id_list[_]])}@gmail.com,{doses[_]}")' for _ in range(np.size(delivery_id_list))]
+delivery = [f"({delivery_id_list[_]+1},{mobiles.readline()[:-1]},'{escape(usernames[delivery_id_list[_]])}@gmail.com','{doses[_]}')" for _ in range(np.size(delivery_id_list))]
 
 del doses
 
 for page in _paginate(delivery,page_size=100):
-    sql.write("INSERT INTO TABLE delivery (delivery_id,mobile_no,email,vaccination_status) VALUES "+",".join(page)+";\n")
+    sql.write("INSERT INTO delivery (delivery_id,mobile_no,email,vaccination_status) VALUES "+",".join(page)+";\n")
 
 delivery.clear()
 del delivery
 
-mobiles.close() # Restaurants data has its own that can be used
+coord_file = open("random_sources/coordinates.txt","r")
+coords = csv.reader(coord_file)
+geocodes = [f"('{escape(coord[0])}',{coord[1]},{coord[2]})" for coord in coords]
+coord_file.close()
+
+for page in _paginate(geocodes,page_size=100):
+    sql.write("INSERT INTO coordinates (gen_address,latitude,longitude) VALUES "+",".join(page)+";\n")
+
+del coords
+geocodes.clear()
+del geocodes
 
 restaurant_file = open(os.path.join(dirpath,"random_sources/restaurants.txt"),"r")
-restaurant_data = [tuple(line) for line in csv.reader(restaurant_file)]
+lines = list(csv.reader(restaurant_file))
 restaurant_file.close()
 
-addresses = [restaurant_row[0] for restaurant_row in restaurants_data]
+restaurant_data = [f"('{escape(lines[_][0])}',{lines[_][1]},{lines[_][2]},{lines[_][3]},0,false,'10:00+5:30','21:00+5:30',{restaurant_id_list[_]},{mobiles.readline()[:-1]},'{escape(usernames[restaurant_id_list[_]])}@gmail.com')" for _ in range(np.size(restaurant_id_list))]
 
-restaurants = []
+for page in _paginate(restaurant_data,page_size=100):
+    sql.write("INSERT INTO restaurant (restaurant_name,avg_cost_for_two,latitude,longitude,overall_discount,max_safety_follow,open_time,close_time,restaurant_id,mobile_no,email) VALUES "+",".join(page)+";\n")
+
+lines.clear()
+del lines
+restaurant_data.clear()
+del restaurant_data
+
+mobiles.close() # All usage of mobile numbers complete
 
 del customer_id_list
 del delivery_id_list
