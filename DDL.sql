@@ -15,7 +15,7 @@ DROP TABLE IF EXISTS gen_user CASCADE;
 
 CREATE TABLE gen_user (
     user_id bigserial NOT NULL,
-    username varchar(30) NOT NULL,
+    username varchar(30) NOT NULL UNIQUE,
     password varchar(128) NOT NULL,
     role roles NOT NULL,
     valid boolean default true NOT NULL,
@@ -29,7 +29,7 @@ CREATE TABLE customer (
     customer_id bigserial NOT NULL,
     mobile_no integer NOT NULL,
     email varchar(254), --customer email can be null, this means they did not provide an email--
-    subscription boolean NOT NULL,
+    subscription boolean default false NOT NULL,
     primary key(customer_id),
     foreign key(customer_id) references gen_user on delete cascade
 );
@@ -85,7 +85,7 @@ CREATE TABLE delivery (
     delivery_id bigserial NOT NULL,
     mobile_no integer NOT NULL,
     email varchar(254), --delivery email can be null, this means the delivery partner did not provide an email--
-    available BOOLEAN NOT NULL,
+    available BOOLEAN default false NOT NULL,
     vaccination_status doses NOT NULL,
     primary key(delivery_id),
     foreign key(delivery_id) references gen_user on delete cascade
