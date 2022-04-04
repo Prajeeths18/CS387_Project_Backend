@@ -30,7 +30,8 @@ sql = open(os.path.join(dirpath,"InsertData.sql"),"w")
 NUMBER_OF_RESTAURANTS=100
 NUMBER_OF_CUSTOMERS=6000
 NUMBER_OF_DELIVERY=500
-
+NUMBER_OF_CUSTOMER_ADDRESSES=[0.6,0.3,0.1]
+NUMBER_OF_FAVOURITES=5
 NUMBER_OF_USERS=NUMBER_OF_CUSTOMERS+NUMBER_OF_DELIVERY+NUMBER_OF_RESTAURANTS # For entries into gen_user
 
 SEED = 42
@@ -133,11 +134,23 @@ del coords
 geocodes.clear()
 del geocodes
 
+coord_file = open("random_sources/houses.txt","r") # Some lat-long values of apartments for customers - imprecise addresses
+coords = csv.reader(coord_file)
+geocodes = [f"('{escape(coord[2])}',{coord[0]},{coord[1]})" for coord in coords]
+coord_file.close()
+
+for page in _paginate(geocodes,page_size=100):
+    sql.write("INSERT INTO coordinates (gen_address,latitude,longitude) VALUES "+",".join(page)+";\n")
+
+del coords
+geocodes.clear()
+del geocodes
+
 restaurant_file = open(os.path.join(dirpath,"random_sources/restaurants.txt"),"r")
 lines = list(csv.reader(restaurant_file))
 restaurant_file.close()
 
-restaurant_data = [f"('{escape(lines[_][0])}',{lines[_][1]},{lines[_][2]},{lines[_][3]},0,false,'10:00+5:30','21:00+5:30',{restaurant_id_list[_]},{mobiles.readline()[:-1]},'{escape(usernames[restaurant_id_list[_]])}@gmail.com')" for _ in range(np.size(restaurant_id_list))]
+restaurant_data = [f"('{escape(lines[_][0])}',{lines[_][1]},{lines[_][2]},{lines[_][3]},0,false,'10:00+5:30','21:00+5:30',{restaurant_id_list[_]+1},{mobiles.readline()[:-1]},'{escape(usernames[restaurant_id_list[_]])}@gmail.com')" for _ in range(np.size(restaurant_id_list))]
 
 for page in _paginate(restaurant_data,page_size=100):
     sql.write("INSERT INTO restaurant (restaurant_name,avg_cost_for_two,latitude,longitude,overall_discount,max_safety_follow,open_time,close_time,restaurant_id,mobile_no,email) VALUES "+",".join(page)+";\n")
@@ -202,6 +215,29 @@ for i in range(np.size(customer_id_list)):
 
 
 
+coord_file = open("random_sources/houses.txt","r")
+number_of_addresses = np.random.choice(range(1,len(NUMBER_OF_CUSTOMER_ADDRESSES)+1),size=np.size(customer_id_list),p=NUMBER_OF_CUSTOMER_ADDRESSES)
+
+address_data = [",".join([f"({customer_id_list[i]+1},"+",".join(coord_file.readline()[:-1].split(",")[:2])+")" for j in range(number_of_addresses[i])]) for i in range(np.size(customer_id_list))]
+del number_of_addresses
+coord_file.close()
+
+AVG_NUM_ADDRESS = sum([x*y for x,y in zip(range(1,len(NUMBER_OF_CUSTOMER_ADDRESSES)+1),NUMBER_OF_CUSTOMER_ADDRESSES)])
+
+assert (NUMBER_OF_CUSTOMERS*AVG_NUM_ADDRESS<=9700),"Insufficient house records to simulate"
+
+for page in _paginate(address_data,page_size=int(100/AVG_NUM_ADDRESS)):
+    sql.write("INSERT INTO customer_address (customer_id,latitude,longitude) VALUES "+",".join(page)+";\n")
+
+address_data.clear()
+del address_data
+
+no_of_favourites = np.size(customer_id_list)*NUMBER_OF_FAVOURITES
+restaurant_favourites = np.random.choice(restaurant_id_list,size=no_of_favourites)
+favourite_data = [",".join([f"({customer_id_list[i]+1},{j+1})" for j in restaurant_favourites[NUMBER_OF_FAVOURITES*i:NUMBER_OF_FAVOURITES*(i+1)]]) for i in range(np.size(customer_id_list))]
+
+for page in _paginate(favourite_data,page_size=100):
+    sql.write("INSERT INTO favorites (customer_id,restaurant_id) VALUES "+",".join(page)+";\n")
 
 del customer_id_list
 del delivery_id_list
