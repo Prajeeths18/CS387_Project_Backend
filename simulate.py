@@ -178,14 +178,14 @@ for page in _paginate(address_data,page_size=int(100/AVG_NUM_ADDRESS)):
 
 address_data.clear()
 del address_data
-
+"""
 no_of_favourites = np.size(customer_id_list)*NUMBER_OF_FAVOURITES
 restaurant_favourites = np.random.choice(restaurant_id_list,size=no_of_favourites)
 favourite_data = [",".join([f"({customer_id_list[i]+1},{j+1})" for j in restaurant_favourites[NUMBER_OF_FAVOURITES*i:NUMBER_OF_FAVOURITES*(i+1)]]) for i in range(np.size(customer_id_list))]
 
 for page in _paginate(favourite_data,page_size=100):
     sql.write("INSERT INTO favorites (customer_id,restaurant_id) VALUES "+",".join(page)+";\n")
-
+"""
 del customer_id_list
 del delivery_id_list
 del restaurant_id_list

@@ -8,7 +8,7 @@ CREATE TYPE roles AS ENUM ('CUSTOMER', 'RESTAURANT', 'DELIVERY');
 CREATE TYPE doses AS ENUM ('0', '1', '2');
 CREATE TYPE rating AS ENUM ('0', '1', '2', '3', '4', '5');
 CREATE TYPE vegtype AS  ENUM ('VEG', 'NON_VEG');
-CREATE TYPE course AS ENUM ('BREAKFAST', 'STARTERS', 'MAIN_COURSE', 'DESSERT', 'SNACKS', 'DINNER');
+CREATE TYPE course AS ENUM ('STARTERS', 'MAIN_COURSE', 'DESSERT', 'SNACKS');
 
 -- Generalization for Django --
 DROP TABLE IF EXISTS gen_user CASCADE;
@@ -52,12 +52,12 @@ CREATE TABLE restaurant (
     restaurant_id bigserial NOT NULL,
     restaurant_name varchar(256) NOT NULL,
     mobile_no bigint NOT NULL,
-    email varchar(254), --restaurant email can be null, this means they did not provide an email--
-    overall_discount float NOT NULL,
-    max_safety_follow boolean NOT NULL,
-    open_time time with time zone NOT NULL,
-    close_time time with time zone NOT NULL,
-    avg_cost_for_two integer NOT NULL,
+    email varchar(254) default NULL, --restaurant email can be null, this means they did not provide an email--
+    overall_discount float default 0 NOT NULL,
+    max_safety_follow boolean default false NOT NULL,
+    open_time time with time zone default '10:00+5:30' NOT NULL,
+    close_time time with time zone default '21:00+5:30' NOT NULL,
+    avg_cost_for_two integer default 0 NOT NULL,
     latitude float NOT NULL,
     longitude float NOT NULL,
     primary key(restaurant_id),
@@ -98,7 +98,7 @@ CREATE TABLE food_order (
     order_id integer NOT NULL,
     customer_id bigserial NOT NULL,
     order_place_time timestamp with time zone NOT NULL,
-    expected_delivery_time timestamp with time zone NOT NULL,
+    expected_delivery_time timestamp with time zone, -- null means order was rejected
     actual_delivery_time timestamp with time zone NOT NULL,
     restaurant_review TEXT, --restaurant review can be null, it means that the customer associated with the order did not write a review for the restaurant--
     restaurant_rating rating, --restaurant rating can be null, it means that the customer associated with the order did not submit a rating for the restaurant--
@@ -156,7 +156,7 @@ CREATE TABLE order_restaurant (
     order_id integer NOT NULL,
     customer_id bigserial NOT NULL,
     restaurant_id bigserial NOT NULL,
-    primary key(order_id, customer_id, restaurant_id),
+    primary key(order_id, customer_id),
     foreign key(order_id, customer_id) references food_order on delete no action,
     foreign key(restaurant_id) references restaurant on delete no action
 );
@@ -188,7 +188,7 @@ create table order_taken(
     delivery_id bigserial NOT NULL,
     delivery_review text, --delivary review can be null, it means that the customer associated with the order did not write a review for the delivery--
     delivery_rating rating, --delivery rating can be null, it means that the customer associated with the order did not submit a rating for the delivery--
-    primary key(order_id, customer_id, delivery_id),
+    primary key(order_id, customer_id),
     foreign key(order_id, customer_id) references food_order on delete no action,
     foreign key(delivery_id) references delivery on delete no action
 );
