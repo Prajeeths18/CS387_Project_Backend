@@ -2,7 +2,8 @@ import os
 import subprocess
 import numpy as np
 import csv
-
+import random
+import datetime as dt
 """
 Utility from psycopg2 for paginate
 """
@@ -31,7 +32,6 @@ NUMBER_OF_CUSTOMERS=6000
 NUMBER_OF_DELIVERY=500
 NUMBER_OF_CUSTOMER_ADDRESSES=[0.6,0.3,0.1]
 NUMBER_OF_FAVOURITES=5
-
 NUMBER_OF_USERS=NUMBER_OF_CUSTOMERS+NUMBER_OF_DELIVERY+NUMBER_OF_RESTAURANTS # For entries into gen_user
 
 SEED = 42
@@ -161,6 +161,59 @@ restaurant_data.clear()
 del restaurant_data
 
 mobiles.close() # All usage of mobile numbers complete
+
+ORDER_CUSTOMER_MAX = 20
+ORDER_CUSTOMER_MIN = 2
+REST_START = 10
+REST_END = 21
+ORDER_YR = 2022
+MIN_OFFSET = 20*60
+MAX_OFFSET = 70*60
+NEG_DISTORT = -10*60
+POS_DISTORT = 20*60
+customer_data = [] 
+
+def split_time(off_set):
+    #print("secs:",off_set)
+    hr_,min_ = int(off_set/3600),off_set%3600
+    min_,sec_= int(min_/60),min_%60
+    return (hr_,min_,sec_)
+
+def add_time(hr,minu,sec,max_offset,min_offset): 
+    hr_,min_,sec_ = split_time(random.randint(min_offset,max_offset))
+    t1 = dt.datetime.strptime(f'{hr}:{minu}:{sec}', '%H:%M:%S')
+    t2 = dt.datetime.strptime(f'{hr_}:{min_}:{sec_}', '%H:%M:%S')
+    time_zero = dt.datetime.strptime('00:00:00', '%H:%M:%S')
+    z = (t1 - time_zero + t2).time()
+    #print(z,type(z),z.hour)
+    return (z.hour,z.minute,z.second)
+
+for i in range(np.size(customer_id_list)):
+    cust_id = customer_id_list[i]
+    no_of_order = random.randint(ORDER_CUSTOMER_MIN,ORDER_CUSTOMER_MAX+1)
+    for j in range(no_of_order):
+
+        m,hr,minute,sec = random.randint(1,13),random.randint(REST_START,REST_END),random.randint(0,60),random.randint(0,60)
+        day = random.randint(1,29)
+        if m in [1,3,5,7,8,10,12]:
+            day = random.randint(1,32)
+        elif m in [4,6,9,11]:
+            day = random.randint(1,31)
+
+        place_time = f'{ORDER_YR}-{m}-{day} {hr}:{minute}:{sec} +5:30'
+        #print("place time is:",place_time)
+        added_time = add_time(hr,minute,sec,MAX_OFFSET,MIN_OFFSET)
+
+        exp_time = f'{ORDER_YR}-{m}-{day} {added_time[0]}:{added_time[1]}:{added_time[2]} +5:30'
+
+        secs = added_time[0]*3600+added_time[1]*60+added_time[2]
+        temp = split_time(secs+random.randint(NEG_DISTORT,POS_DISTORT))
+
+        actual_time = f'{ORDER_YR}-{m}-{day} {temp[0]}:{temp[1]}:{temp[2]} +5:30'
+
+        
+
+
 
 coord_file = open("random_sources/houses.txt","r")
 number_of_addresses = np.random.choice(range(1,len(NUMBER_OF_CUSTOMER_ADDRESSES)+1),size=np.size(customer_id_list),p=NUMBER_OF_CUSTOMER_ADDRESSES)
