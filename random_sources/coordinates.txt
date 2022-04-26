@@ -880,7 +880,6 @@
 "252, Sant Nagar, East of Kailash, New Delhi",28.55550213,77.24957529
 "Shop 1/191, Neelkanth Palace, Sant Nagar, East of Kailash, New Delhi",28.55600306,77.25070518
 "Near Mool Chand Metro Station, East of Kailash, New Delhi",28.5617082,77.2539276
-"Test address, East of Kailash, New Delhi",35,34
 "3/3, Community Centre, East of Kailash, New Delhi",28.55863333,77.24595
 "F-50, East of Kailash, New Delhi",28.5562573,77.2446488
 "Shop 27/6, Garhi Main Market, East of Kailash, New Delhi",28.560295,77.250781

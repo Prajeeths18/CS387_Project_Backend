@@ -30,7 +30,7 @@ restaurant = open("../random_sources/zomato.csv","r",encoding="latin-1")
 next(restaurant)
 restaurants_data = [tuple(line) for line in csv.reader(restaurant)]
 restaurant.close()
-restaurants_data = list(filter(lambda x: (x[3] == "New Delhi") and ((x[7] != "0") or (x[8] != "0")), restaurants_data))
+restaurants_data = list(filter(lambda x: (x[3] == "New Delhi") and ((x[7] != "0") or (x[8] != "0")) and (float(x[8])<29), restaurants_data))
 restaurant = open("../random_sources/coordinates.txt","w")
 coords = set()
 for row in restaurants_data:
@@ -38,7 +38,7 @@ for row in restaurants_data:
         restaurant.write(f'"{row[4]}",{row[8]},{row[7]}\n')
         coords.add((row[7],row[8]))
 restaurant.close()
-restaurant = open("../random_sources/restaurants_data.csv","w")
+restaurant = open("../random_sources/restaurants.txt","w")
 for row in restaurants_data:
     restaurant.write(f'"{row[1]}",{row[10]},{row[8]},{row[7]}\n')
 restaurant.close()

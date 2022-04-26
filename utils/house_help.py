@@ -2,7 +2,7 @@ import csv
 
 houses = open("../random_sources/houses.csv","r")
 next(houses)
-data = list(csv.reader(houses))
+data = list(filter(lambda x: float(x[4]) >= 27, csv.reader(houses)))
 house_file = open("../random_sources/houses.txt","w")
 coords = set()
 for row in data:
