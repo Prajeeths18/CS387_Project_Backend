@@ -1,5 +1,6 @@
 require('dotenv').config();
 const pg = require('pg');
+const { equal } = require('assert');
 pg.defaults.parseInt8 = true;
 
 const pool = new pg.Pool();
@@ -12,5 +13,25 @@ module.exports = {
   terminate: () => {
     pool.end();
   },
-  pool: pool
+  pool: pool,
+  transaction: async (queries, queryParams) => {
+    // note: we don't try/catch this because if connecting throws an exception
+    // we don't need to dispose of the client (it will be undefined)
+    equal(queries.length,queryParams.length);
+    const client = await pool.connect()
+    try {
+      await client.query('BEGIN')
+      let result = Array(queries.length);
+      for(let i=0; i<queries.length; i++){
+        result[i] = await client.query(queries[i],queryParams[i]);
+      }
+      await client.query('COMMIT');
+      return result;
+    } catch (e) {
+      await client.query('ROLLBACK')
+      throw e
+    } finally {
+      client.release()
+    }
+  }
 }
