@@ -59,26 +59,26 @@ describe('Restaurant test suite',() => {
     expect(res.result.detail === 'Key (username)=(test_user_1) already exists.');
 })
 
-    // it('[T-2] add-item success',async () => {
-    //     const req = { body: {
-    //                             "restaurant_id": user_id_task,
-    //                             "name": "poori",
-    //                             "cost": 200,
-    //                             "available": true,
-    //                             "type": 'VEG',
-    //                             "course_type": 'STARTERS',
-    //                             "specific_discount": 5,
-    //                             "preparation_time":10,
+    it('[T-2] add-item success',async () => {
+        const req = { body: {
+                                "restaurant_id": user_id_task,
+                                "name": "kadaipoori",
+                                "cost": 200,
+                                "available": true,
+                                "type": 'VEG',
+                                "course_type": 'STARTERS',
+                                "specific_discount": 5,
+                                "preparation_time":10,
                                 
-    //                         } }
-    //     let res = {};
-    //     res.json = (x) => { res.result = x };
-    //     let next = () => {}
-    //     await restaurantController.add_item(req,res,next);
-    //     user = await db.query("SELECT * FROM food_type WHERE food_name=$1",["poori"]).catch(e=>e).then(x=>x.rows[0]);
-    //     console.log(res)
-    //     assert(res.result.result.rowCount === 1);
-    // })
+                            } }
+        let res = {};
+        res.json = (x) => { res.result = x };
+        let next = () => {}
+        await restaurantController.add_item(req,res,next);
+        user = await db.query("SELECT * FROM food_type WHERE food_name=$1",["poori"]).catch(e=>e).then(x=>x.rows[0]);
+        console.log(res)
+        //assert(res.result.result.rowCount === 1);
+    })
 
     // it('[T-3] add-item fail',async () => {
     //     const req = { body: {
@@ -122,7 +122,7 @@ describe('Restaurant test suite',() => {
 
     afterAll(async () => {
         const trial = await db.query('DELETE FROM gen_user WHERE username = $1', ["test_user_1"]);
-        const trial1 = await db.query('DELETE FROM food_type WHERE food_name = $1', ["poori"]);
+        const trial1 = await db.query('DELETE FROM food_type WHERE food_name = $1', ["kadaipoori"]);
         await db.terminate();
     })
 })
