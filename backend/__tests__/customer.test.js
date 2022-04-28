@@ -25,7 +25,9 @@ let user;
 
 describe('Customer Routes test suite',() => {
     beforeAll(async () => {
-        await db.query('INSERT INTO gen_user (username,password,role,valid) VALUES (test_restaurant,useless_password,"RESTAURANT",true');
+        // await db.query('INSERT INTO gen_user (username,password,role,valid) VALUES ("test_restaurant","useless_password","RESTAURANT",true);');
+        // let restaurant_id = await db.query('SELECT FROM gen_user WHERE username = "test_restaurant";').then(x=>x.rows[0].user_id);
+        // await db.query('INSERT INTO restaurant (restaurant_id,restaurant_name,mobile_no,latitude,longitude) VALUES ();')
     })
     it('[T-0] Register Success',async () => {
         const trial = await db.query('DELETE FROM gen_user WHERE username = $1', ["test_user_1"]);
