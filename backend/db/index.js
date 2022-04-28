@@ -1,24 +1,25 @@
-require('dotenv').config();
+require('dotenv').config()
 const pg = require('pg');
 const { equal } = require('assert');
 pg.defaults.parseInt8 = true;
 
-const pool = new pg.Pool();
-pool.connect();
+if(!global.pool){
+  global.pool = new pg.Pool();
+}
 
 module.exports = {
   query: async (text, params) => {
-    return await pool.query(text, params).catch(e=>e);
+    return await global.pool.query(text, params).catch(e=>e);
   },
-  terminate: () => {
-    pool.end();
+  terminate: async () => {
+    await global.pool.end();
   },
-  pool: pool,
+  pool: global.pool,
   transaction: async (queries, queryParams) => {
     // note: we don't try/catch this because if connecting throws an exception
     // we don't need to dispose of the client (it will be undefined)
     equal(queries.length,queryParams.length);
-    const client = await pool.connect()
+    const client = await global.pool.connect()
     try {
       await client.query('BEGIN')
       let result = Array(queries.length);

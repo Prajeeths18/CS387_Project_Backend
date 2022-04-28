@@ -1,8 +1,10 @@
+require('dotenv').config();
 const express = require('express')
 const app = express()
 const port = 3000
 const dummyRoute = require("./routes/dummy.routes");
 const customerRoute = require("./routes/customer.routes");
+
 
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
