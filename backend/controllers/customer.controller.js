@@ -10,7 +10,7 @@ async function register(req,res,next){
         req.body.mobile, 
         req.body.email
         ));
-    res.json({});
+    // res.json({});
 }
 
 exports.register = register;

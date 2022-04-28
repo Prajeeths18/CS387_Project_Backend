@@ -1,4 +1,6 @@
 const db = require('../db');
+// const pgp = require('pg-promise');
+const bcrypt = require('bcrypt');
 
 async function register(username, password, address, latitude, longitude, mobile, email) {
     const query = `
@@ -11,7 +13,8 @@ async function register(username, password, address, latitude, longitude, mobile
         )
         INSERT INTO customer_address (customer_id,latitude,longitude) SELECT user_id,$4,$5 FROM usid;
     `
-    const result = await db.query(query,[username,password,address,latitude,longitude,mobile,email]).catch(e=>e);
+    // console.log(pgp.as.format(query,[username,await bcrypt.hash(password,10),address,latitude,longitude,mobile,email]));
+    const result = await db.query(query,[username,await bcrypt.hash(password,10),address,latitude,longitude,mobile,email]).catch(e=>e);
     return { result };
 }
 

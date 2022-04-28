@@ -13,6 +13,7 @@ module.exports = {
   },
   terminate: async () => {
     await global.pool.end();
+    global.pool = undefined;
   },
   pool: global.pool,
   transaction: async (queries, queryParams) => {
