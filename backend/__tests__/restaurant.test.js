@@ -22,6 +22,7 @@ describe('Restaurant test suite',() => {
         await restaurantController.register(req,res,next);
         user = await db.query("SELECT user_id,username,role,valid FROM gen_user WHERE username=$1",["test_user_1"]).catch(e=>e).then(x=>x.rows[0]);
         expect(res.result.rowCount === 1);
+        console.log(res.result)
     })
 
     it('[T-1] Restaurant register - Duplicate username', async () => {
@@ -66,7 +67,7 @@ describe('Restaurant test suite',() => {
         expect(res.result.rowCount === 1);
     })
 
-    it('[T-2] add-item fail',async () => {
+    it('[T-3] add-item fail',async () => {
         const req = { body: {
                                 "restaurant_id": "test_user_1",
                                 "name": "poori",
@@ -86,6 +87,27 @@ describe('Restaurant test suite',() => {
         expect(res.result.result.severity === "ERROR");
 
     })
+
+    // it('[T-4] Update Details - Success', async () => {
+    //     const req = { body: {
+    //                             "username": "test_user_1",
+    //                             "password": "dummy_password",
+    //                             "address": "84, Near Honda Showroom, Adchini, New Delhi",
+    //                             "latitude": 28.53538174,
+    //                             "longitude": 77.19692286,
+    //                             "mobile": 9999999999,
+    //                             "email": "test_user_1@test.com",
+
+    //                             restaurant_id,mobile_no,email,address,overall_discount,max_safety_follow,open_time,close_time
+                                
+    //                         } }
+    //     let res = {};
+    //     res.json = (x) => { res.result = x };
+    //     let next = () => {}
+    //     await restaurantController.register(req,res,next);
+    //     user = await db.query("SELECT user_id,username,role,valid FROM gen_user WHERE username=$1",["test_user_1"]).catch(e=>e).then(x=>x.rows[0]);
+    //     expect(res.result.rowCount === 1);
+    // })
 
     afterAll(async () => {
         const trial = await db.query('DELETE FROM gen_user WHERE username = $1', ["test_user_1"]);
