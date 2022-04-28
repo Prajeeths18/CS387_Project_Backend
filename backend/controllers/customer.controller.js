@@ -14,3 +14,5 @@ async function register(req,res,next){
 }
 
 exports.register = register;
+
+//req.user.user_id //req.user.

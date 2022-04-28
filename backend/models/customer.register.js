@@ -18,4 +18,15 @@ async function register(username, password, address, latitude, longitude, mobile
     return { result };
 }
 
+
+
+
+
+
+
+
+
+
+
+
 exports.register = register;
