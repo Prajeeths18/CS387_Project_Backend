@@ -23,9 +23,9 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">51.85% </span>
+                <span class="strong">33.33% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>14/27</span>
+                <span class='fraction'>9/27</span>
             </div>
         
             
@@ -37,16 +37,16 @@
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">42.85% </span>
+                <span class="strong">14.28% </span>
                 <span class="quiet">Functions</span>
-                <span class='fraction'>3/7</span>
+                <span class='fraction'>1/7</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">52% </span>
+                <span class="strong">36% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>13/25</span>
+                <span class='fraction'>9/25</span>
             </div>
         
             
@@ -61,7 +61,7 @@
             </div>
         </template>
     </div>
-    <div class='status-line medium'></div>
+    <div class='status-line low'></div>
     <pre><table class="coverage">
 <tr><td class="line-count quiet"><a name='L1'></a><a href='#L1'>1</a>
 <a name='L2'></a><a href='#L2'>2</a>
@@ -205,7 +205,9 @@
 <a name='L140'></a><a href='#L140'>140</a>
 <a name='L141'></a><a href='#L141'>141</a>
 <a name='L142'></a><a href='#L142'>142</a>
-<a name='L143'></a><a href='#L143'>143</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">1x</span>
+<a name='L143'></a><a href='#L143'>143</a>
+<a name='L144'></a><a href='#L144'>144</a>
+<a name='L145'></a><a href='#L145'>145</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -275,16 +277,18 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">2x</span>
-<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -408,28 +412,30 @@ async function register(username, password, address, latitude, longitude, mobile
     WITH usid AS (
         INSERT INTO gen_user (username,password,role) VALUES ($1,$2,'RESTAURANT') RETURNING user_id
     ), q1 AS (
-        INSERT INTO gen_address (latitude, longitude, address) VALUES ($4,$5,$3) ON CONFLICT (latitude,longitude) DO NOTHING
+        INSERT INTO coordinates (latitude, longitude, gen_address) VALUES ($4,$5,$3) ON CONFLICT (latitude,longitude) DO NOTHING
     )
-    INSERT INTO restaurant (restaurant_id,restaurant_name,mobile_no,email,overall_discount,max_safety_follow,open_time,close_time,avg_cost_for_two,latitude,longitude) SELECT (user_id,$6,$7,$8,$9,$10,$11,$12,$4,$5) FROM usid; 
+    INSERT INTO restaurant (restaurant_id,restaurant_name,mobile_no,email,overall_discount,max_safety_follow,open_time,close_time,avg_cost_for_two,latitude,longitude) SELECT user_id,$1,$6,$7,$8,$9,$10,$11,$12,$4,$5 FROM usid; 
     `
     const result = await db.query(query,[username,password,address,latitude,longitude,mobile,email,overall_discount,max_safety_follow,open_time,close_time,avg_cost_for_two]).catch(<span class="fstat-no" title="function not covered" >e=</span>&gt;<span class="cstat-no" title="statement not covered" >e)</span>;
     return { result };
 }
 &nbsp;
-async function add_item(restaurant_id, name, cost, available, type, course_type, specific_discount,preparation_time) {
-    const queryType = `
+async function <span class="fstat-no" title="function not covered" >add_item(</span>restaurant_id, name, cost, available, type, course_type, specific_discount,preparation_time) {
+    const queryType = <span class="cstat-no" title="statement not covered" >`</span>
     INSERT INTO food_type (food_name,food_type,course_type) VALUES ($1,$2,$3) ON CONFLICT (food_name) DO NOTHING;
     `
     const queryItem =
-    `
+<span class="cstat-no" title="statement not covered" >    `</span>
     INSERT INTO food_items (restaurant_id,food_name,available,preparation_time,specific_discount,cost) VALUES ($1,$2,$3,$4,$5,$6);
     `
 &nbsp;
-    const result = await db.transaction([queryType,queryItem],[[name, type, course_type], [restaurant_id, name, available, preparation_time, specific_discount, cost]]).catch(e=&gt;e);
-    return { result };
+    const result = <span class="cstat-no" title="statement not covered" >await db.transaction([queryType,queryItem],[[name, type, course_type], [restaurant_id, name, available, preparation_time, specific_discount, cost]]).catch(<span class="fstat-no" title="function not covered" >e=</span>&gt;<span class="cstat-no" title="statement not covered" >e)</span>;</span>
+<span class="cstat-no" title="statement not covered" >    return { result };</span>
 }
 &nbsp;
-async function <span class="fstat-no" title="function not covered" >update_details(</span>restaurant_id,mobile_no,email,address,overall_discount,max_safety_follow,open_time,close_time){
+async function <span class="fstat-no" title="function not covered" >update_details(</span>
+    
+){
 &nbsp;
     const queryRest = <span class="cstat-no" title="statement not covered" >` SELECT * FROM restaurant WHERE restaurant_id=$1;</span>
     `
@@ -496,7 +502,7 @@ exports.delete_food_item = delete_food_item</pre></td></tr></table></pre>
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at Thu Apr 28 2022 23:11:27 GMT+0530 (India Standard Time)
+                at Fri Apr 29 2022 00:15:55 GMT+0530 (India Standard Time)
             </div>
         <script src="../prettify.js"></script>
         <script>

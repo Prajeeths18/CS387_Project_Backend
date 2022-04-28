@@ -59,9 +59,9 @@ async function register(username, password, address, latitude, longitude, mobile
     WITH usid AS (
         INSERT INTO gen_user (username,password,role) VALUES ($1,$2,'RESTAURANT') RETURNING user_id
     ), q1 AS (
-        INSERT INTO gen_address (latitude, longitude, address) VALUES ($4,$5,$3) ON CONFLICT (latitude,longitude) DO NOTHING
+        INSERT INTO coordinates (latitude, longitude, gen_address) VALUES ($4,$5,$3) ON CONFLICT (latitude,longitude) DO NOTHING
     )
-    INSERT INTO restaurant (restaurant_id,restaurant_name,mobile_no,email,overall_discount,max_safety_follow,open_time,close_time,avg_cost_for_two,latitude,longitude) SELECT (user_id,$6,$7,$8,$9,$10,$11,$12,$4,$5) FROM usid; 
+    INSERT INTO restaurant (restaurant_id,restaurant_name,mobile_no,email,overall_discount,max_safety_follow,open_time,close_time,avg_cost_for_two,latitude,longitude) SELECT user_id,$1,$6,$7,$8,$9,$10,$11,$12,$4,$5 FROM usid; 
     `
     const result = await db.query(query,[username,password,address,latitude,longitude,mobile,email,overall_discount,max_safety_follow,open_time,close_time,avg_cost_for_two]).catch(e=>e);
     return { result };
@@ -80,7 +80,9 @@ async function add_item(restaurant_id, name, cost, available, type, course_type,
     return { result };
 }
 
-async function update_details(restaurant_id,mobile_no,email,address,overall_discount,max_safety_follow,open_time,close_time){
+async function update_details(
+    
+){
 
     const queryRest = ` SELECT * FROM restaurant WHERE restaurant_id=$1;
     `
