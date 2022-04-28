@@ -1,7 +1,8 @@
 const restaurantModel = require('../models/restaurant.model');
 
 async function register(req,res,next){
-    await restaurantModel.register(
+    res.json(
+        await restaurantModel.register(
         req.body.username,
         req.body.password,
         req.body.address, 
@@ -14,11 +15,13 @@ async function register(req,res,next){
         req.body.open_time,
         req.body.close_time,
         req.body.avg_cost_for_two,
-        );
-    res.json({});
+        )
+    )
+    
 }
 
 async function add_item(req,res,next){
+    res.json(
     await restaurantModel.add_item(
         req.body.username,
         req.body.password,
@@ -32,8 +35,8 @@ async function add_item(req,res,next){
         req.body.open_time,
         req.body.close_time,
         req.body.avg_cost_for_two,
-        );
-    res.json({});
+        )
+    )
 }
 
 

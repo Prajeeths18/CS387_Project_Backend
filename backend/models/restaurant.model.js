@@ -56,27 +56,27 @@ const db = require('../db');
 //         UPDATE food_order SET expected_delivery_time=0 WHERE order_id=$1,customer_id=$2;
 async function register(username, password, address, latitude, longitude, mobile, email,overall_discount,max_safety_follow,open_time,close_time,avg_cost_for_two) {
     const query = `
-    BEGIN;
     WITH usid AS (
         INSERT INTO gen_user (username,password,role) VALUES ($1,$2,'RESTAURANT') RETURNING user_id
     ), q1 AS (
         INSERT INTO gen_address (latitude, longitude, address) VALUES ($4,$5,$3) ON CONFLICT (latitude,longitude) DO NOTHING
     )
     INSERT INTO restaurant (restaurant_id,restaurant_name,mobile_no,email,overall_discount,max_safety_follow,open_time,close_time,avg_cost_for_two,latitude,longitude) SELECT (user_id,$6,$7,$8,$9,$10,$11,$12,$4,$5) FROM usid; 
-    COMMIT;
     `
     const result = await db.query(query,[username,password,address,latitude,longitude,mobile,email,overall_discount,max_safety_follow,open_time,close_time,avg_cost_for_two]).catch(e=>e);
     return { result };
 }
 
 async function add_item(restaurant_id, name, cost, available, type, course_type, specific_discount,preparation_time) {
-    const query = `
-    
-    INSERT INTO food_type (food_name,food_type,course_type) VALUES ($2,$5,$6) ON CONFLICT (food_name) DO NOTHING;
-    INSERT INTO food_items (restaurant_id,food_name,available,preparation_time,specific_discount,cost) VALUES ($1,$2,$4,$8,$7,$3);
+    const queryType = `
+    INSERT INTO food_type (food_name,food_type,course_type) VALUES ($1,$2,$3) ON CONFLICT (food_name) DO NOTHING;
     `
-    
-    const result = await db.query(query,[restaurant_id, name, cost, available, type, course_type, specific_discount,preparation_time]).catch(e=>e);
+    const queryItem =
+    `
+    INSERT INTO food_items (restaurant_id,food_name,available,preparation_time,specific_discount,cost) VALUES ($1,$2,$3,$4,$5,$6);
+    `
+
+    const result = await db.transaction([queryType,queryItem],[[name, type, course_type], [restaurant_id, name, available, preparation_time, specific_discount, cost]]).catch(e=>e);
     return { result };
 }
 
