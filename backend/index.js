@@ -10,7 +10,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
 app.use("/", dummyRoute);
-app.use("/", customerRoute);
+app.use("/api/customer/", customerRoute);
 app.use("/", authRoute);
 
 function clientErrorHandler (err, req, res, next) {
