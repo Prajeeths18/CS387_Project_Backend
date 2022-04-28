@@ -14,4 +14,15 @@ async function register(username, password, address, latitude, longitude, mobile
     const result = await db.query(query,[username,password,address,latitude,longitude,mobile,email]).catch(e=>e);
 }
 
+
+
+
+
+
+
+
+
+
+
+
 exports.register = register;
