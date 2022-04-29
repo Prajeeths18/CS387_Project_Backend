@@ -95,7 +95,7 @@ async function delivery_review(order_id, customer_id, rating, review) {
 
 async function profile(customer_id) {
     const customerQuery = 'SELECT mobile_no,email,subscription FROM customer WHERE customer_id=$1;'
-    const addressQuery = 'SELECT gen_address FROM coordinates NATURAL INNER JOIN customer_address WHERE customer_address.customer_id=$1;'
+    const addressQuery = 'SELECT distinct gen_address,latitude,longitude FROM coordinates NATURAL INNER JOIN customer_address WHERE customer_address.customer_id=$1;'
     const [customerResult, addressResult] = await Promise.all([
         db.pool.query(customerQuery,[customer_id]).catch(e=>e).then(x=>x.rows),
         db.pool.query(addressQuery,[customer_id]).catch(e=>e).then(x=>x.rows)
