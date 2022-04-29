@@ -1,2 +1,6 @@
-shuf -n 10000 --random-source=<(yes 42) /home/girish/iitb2021/spring/CS387/CS387_Project_Backend/random_sources/usernames.txt
-
+gen_user = 6600
+customer = 5999
+restaurant = 87
+delivery = 514
+coordinates = 14807
+customer_address = 8996

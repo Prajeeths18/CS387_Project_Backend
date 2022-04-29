@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<coverage generated="1651202472815" clover="3.2.0">
-  <project timestamp="1651202472815" name="All files">
-    <metrics statements="173" coveredstatements="158" conditionals="60" coveredconditionals="59" methods="47" coveredmethods="31" elements="280" coveredelements="248" complexity="0" loc="173" ncloc="173" packages="3" files="8" classes="8"/>
+<coverage generated="1651204247646" clover="3.2.0">
+  <project timestamp="1651204247646" name="All files">
+    <metrics statements="175" coveredstatements="157" conditionals="62" coveredconditionals="60" methods="48" coveredmethods="31" elements="285" coveredelements="248" complexity="0" loc="175" ncloc="175" packages="3" files="8" classes="8"/>
     <package name="controllers">
       <metrics statements="59" coveredstatements="56" conditionals="42" coveredconditionals="42" methods="14" coveredmethods="11"/>
       <file name="auth.controller.js" path="/home/girish/iitb2021/spring/CS387/CS387_Project_Backend/backend/controllers/auth.controller.js">
@@ -74,9 +74,9 @@
       </file>
     </package>
     <package name="db">
-      <metrics statements="22" coveredstatements="22" conditionals="2" coveredconditionals="1" methods="4" coveredmethods="4"/>
+      <metrics statements="24" coveredstatements="21" conditionals="4" coveredconditionals="2" methods="5" coveredmethods="5"/>
       <file name="index.js" path="/home/girish/iitb2021/spring/CS387/CS387_Project_Backend/backend/db/index.js">
-        <metrics statements="22" coveredstatements="22" conditionals="2" coveredconditionals="1" methods="4" coveredmethods="4"/>
+        <metrics statements="24" coveredstatements="21" conditionals="4" coveredconditionals="2" methods="5" coveredmethods="5"/>
         <line num="1" count="3" type="stmt"/>
         <line num="2" count="3" type="stmt"/>
         <line num="3" count="3" type="stmt"/>
@@ -84,25 +84,27 @@
         <line num="6" count="3" type="cond" truecount="1" falsecount="1"/>
         <line num="7" count="3" type="stmt"/>
         <line num="10" count="3" type="stmt"/>
-        <line num="12" count="56" type="stmt"/>
-        <line num="15" count="3" type="stmt"/>
-        <line num="16" count="3" type="stmt"/>
-        <line num="22" count="3" type="stmt"/>
-        <line num="23" count="3" type="stmt"/>
-        <line num="24" count="3" type="stmt"/>
-        <line num="25" count="3" type="stmt"/>
-        <line num="26" count="3" type="stmt"/>
+        <line num="12" count="3" type="cond" truecount="1" falsecount="1"/>
+        <line num="13" count="0" type="stmt"/>
+        <line num="17" count="57" type="stmt"/>
+        <line num="20" count="3" type="stmt"/>
+        <line num="21" count="3" type="stmt"/>
         <line num="27" count="3" type="stmt"/>
-        <line num="28" count="7" type="stmt"/>
-        <line num="30" count="2" type="stmt"/>
-        <line num="31" count="2" type="stmt"/>
-        <line num="33" count="1" type="stmt"/>
-        <line num="34" count="1" type="stmt"/>
+        <line num="28" count="3" type="stmt"/>
+        <line num="29" count="3" type="stmt"/>
+        <line num="30" count="3" type="stmt"/>
+        <line num="31" count="3" type="stmt"/>
+        <line num="32" count="3" type="stmt"/>
+        <line num="33" count="7" type="stmt"/>
+        <line num="35" count="3" type="stmt"/>
         <line num="36" count="3" type="stmt"/>
+        <line num="38" count="0" type="stmt"/>
+        <line num="39" count="0" type="stmt"/>
+        <line num="41" count="3" type="stmt"/>
       </file>
     </package>
     <package name="models">
-      <metrics statements="92" coveredstatements="80" conditionals="16" coveredconditionals="16" methods="29" coveredmethods="16"/>
+      <metrics statements="92" coveredstatements="80" conditionals="16" coveredconditionals="16" methods="29" coveredmethods="15"/>
       <file name="auth.js" path="/home/girish/iitb2021/spring/CS387/CS387_Project_Backend/backend/models/auth.js">
         <metrics statements="12" coveredstatements="12" conditionals="6" coveredconditionals="6" methods="3" coveredmethods="3"/>
         <line num="1" count="1" type="stmt"/>
@@ -165,7 +167,7 @@
         <line num="81" count="2" type="stmt"/>
       </file>
       <file name="restaurant.model.js" path="/home/girish/iitb2021/spring/CS387/CS387_Project_Backend/backend/models/restaurant.model.js">
-        <metrics statements="25" coveredstatements="13" conditionals="0" coveredconditionals="0" methods="7" coveredmethods="3"/>
+        <metrics statements="25" coveredstatements="13" conditionals="0" coveredconditionals="0" methods="7" coveredmethods="2"/>
         <line num="1" count="1" type="stmt"/>
         <line num="58" count="2" type="stmt"/>
         <line num="66" count="2" type="stmt"/>

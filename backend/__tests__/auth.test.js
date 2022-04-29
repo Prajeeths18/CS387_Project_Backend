@@ -5,6 +5,7 @@ const db = require('../db');
 
 describe('Authentication Routes test suite',() => {
     beforeAll(async () => {
+        db.init()
         const req = { body: {
                         "username": "test_user_1",
                         "password": "dummy_password",

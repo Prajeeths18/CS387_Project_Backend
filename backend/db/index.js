@@ -8,6 +8,11 @@ if(!global.pool){
 }
 
 module.exports = {
+  init: () => {
+    if(!global.pool){
+      global.pool = new pg.Pool();
+    }
+  },
   query: async (text, params) => {
     return await global.pool.query(text, params).catch(e=>e);
   },

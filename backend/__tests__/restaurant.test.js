@@ -4,11 +4,11 @@ var assert = require('assert');
 var user_id_task;
 describe('Restaurant test suite',() => {
     beforeAll(async () => {
-
+        db.init()
     })
     it('[T-0] Restaurant register - Success', async () => {
         const req = { body: {
-                                "username": "test_user_1",
+                                "username": "test_user_2",
                                 "password": "dummy_password",
                                 "address": "84, Near Honda Showroom, Adchini, New Delhi",
                                 "latitude": 28.53538174,
@@ -27,15 +27,14 @@ describe('Restaurant test suite',() => {
         res.json = (x) => { res.result = x };
         let next = () => {}
         await restaurantController.register(req,res,next);
-        user = await db.query("SELECT user_id,username,role,valid FROM gen_user WHERE username=$1",["test_user_1"]).catch(e=>e).then(x=>x.rows[0]);
-       user_id_task = user.user_id
+        user = await db.query("SELECT user_id,username,role,valid FROM gen_user WHERE username=$1",["test_user_2"]).catch(e=>e).then(x=>x.rows[0]);
+        user_id_task = user.user_id
         assert(res.result.result.rowCount===1);
- 
     })
 
     it('[T-1] Restaurant register - Duplicate username', async () => {
             const req = { body: {
-                "username": "test_user_1",
+                "username": "test_user_2",
                 "password": "dummy_password",
                 "address": "84, Near Honda Showroom, Adchini, New Delhi",
                 "latitude": 28.53538174,
@@ -56,7 +55,7 @@ describe('Restaurant test suite',() => {
     assert(res.result.result.severity === "ERROR");
     //console.log(res)
     
-    expect(res.result.detail === 'Key (username)=(test_user_1) already exists.');
+    expect(res.result.detail === 'Key (username)=(test_user_2) already exists.');
 })
 
     it('[T-2] add-item success',async () => {
@@ -121,8 +120,9 @@ describe('Restaurant test suite',() => {
     // })
 
     afterAll(async () => {
-        const trial = await db.query('DELETE FROM gen_user WHERE username = $1', ["test_user_1"]);
-        const trial1 = await db.query('DELETE FROM food_type WHERE food_name = $1', ["kadaipoori"]);
+        await db.query('DELETE FROM food_type WHERE food_name = $1', ["kadaipoori"]);
+        await db.query('DELETE FROM food_items WHERE food_name = $1', ["kadaipoori"]);
+        await db.query('DELETE FROM gen_user WHERE username = $1', ["test_user_2"]);
         await db.terminate();
     })
 })

@@ -28,6 +28,7 @@ let delivery_id;
 
 describe('Customer Routes test suite',() => {
     beforeAll(async () => {
+        db.init()
         await db.query("INSERT INTO gen_user (username,password,role,valid) VALUES ('test_restaurant','useless_password','RESTAURANT',true);");
         restaurant_id = await db.query("SELECT user_id FROM gen_user WHERE username = 'test_restaurant';").then(x=>x.rows[0].user_id);
         await db.query("INSERT INTO restaurant (restaurant_id,restaurant_name,mobile_no,latitude,longitude) VALUES ($1,'test_restaurant',1234567890,28.53538174,77.19692286);",[restaurant_id]);
@@ -381,15 +382,15 @@ describe('Customer Routes test suite',() => {
         expect(temp.rows[0].delivery_review === 'more more random nonsense')
     })
     afterAll(async ()=>{
-        await db.query('DELETE FROM gen_user WHERE username = $1', ["test_user_1"]);
-        await db.query("DELETE FROM gen_user WHERE username = 'test_restaurant");
-        await db.query("DELETE FROM gen_user WHERE username = 'test_delivery");
-        await db.query("DELETE FROM food_type WHERE food_name = 'test_food'");
-        await db.query("DELETE FROM food_items WHERE food_name = 'test_food'");
-        await db.query("DELETE FROM food_order WHERE customer_id = $1",[user.user_id]);
-        await db.query("DELETE FROM order_restaurant WHERE customer_id = $1",[user.user_id]);
-        await db.query("DELETE FROM order_has WHERE customer_id = $1",[user.user_id]);
-        await db.query("DELETE FROM order_taken WHERE customer_id = $1",[user.user_id]);
+        await db.query("DELETE FROM food_items WHERE food_name = $1;",['test_food']);
+        await db.query("DELETE FROM food_type WHERE food_name = $1;",['test_food']);
+        await db.query("DELETE FROM food_order WHERE customer_id = $1;",[user.user_id]);
+        await db.query("DELETE FROM order_restaurant WHERE customer_id = $1;",[user.user_id]);
+        await db.query("DELETE FROM order_has WHERE customer_id = $1;",[user.user_id]);
+        await db.query("DELETE FROM order_taken WHERE customer_id = $1;",[user.user_id]);
+        await db.query("DELETE FROM gen_user WHERE username = $1;",['test_delivery']);
+        await db.query("DELETE FROM gen_user WHERE username = $1;",['test_restaurant']);
+        await db.query('DELETE FROM gen_user WHERE username = $1;', ["test_user_1"]);
         await db.terminate();
     })
 });
