@@ -171,6 +171,15 @@ async function profile(restaurant_id) {
     return { result }
 }
 
+async function orders(restaurant_id) {
+    const orderQuery = 'SELECT * FROM food_order NATURAL INNER JOIN order_restaurant WHERE restaurant_id = $1;'
+    const restaurantQuery = 'SELECT * FROM order_restaurant NATURAL INNER JOIN restaurant WHERE restaurant_id = $1;'
+    const orderTakenQuery = 'SELECT * FROM order_restaurant NATURAL INNER JOIN order_taken NATURAL INNER JOIN delivery WHERE restaurant_id = $1;'
+    const orderHasQuery = 'SELECT * FROM order_has NATURAL INNER JOIN order_restaurant NATURAL INNER JOIN food_items WHERE restaurant_id = $1;'
+    const [orderResult,restaurantResult,orderTakenResult,orderHasResult] = await Promise.all([db.query(orderQuery,[restaurant_id]),db.query(restaurantQuery,[restaurant_id]),db.query(orderTakenQuery,[restaurant_id]),db.query(orderHasQuery,[restaurant_id])])
+    return {orderResult,restaurantResult,orderTakenResult,orderHasResult}
+}
+
 exports.register = register
 exports.add_item=add_item
 exports.update_details = update_details
@@ -178,3 +187,4 @@ exports.update_food_item = update_food_item
 exports.delete_food_item = delete_food_item
 exports.food_item_list = food_item_list
 exports.profile = profile
+exports.orders = orders

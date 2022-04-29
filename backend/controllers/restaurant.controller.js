@@ -121,6 +121,20 @@ async function profile(req,res,next){
     )
 }
 
+async function orders(req,res,next) {
+    if((!req.user) || (!req.user.valid)) {
+        return res.sendStatus(500)
+    }
+    if(req.user.role !== 'RESTAURANT') {
+        return res.sendStatus(500)
+    }
+    res.json(
+        await restaurantModel.profile(
+            req.user.user_id
+        )
+    )
+}
+
 exports.register = register;
 exports.add_item=add_item;
 exports.update_details = update_details;
@@ -128,3 +142,4 @@ exports.update_food_item = update_food_item;
 exports.delete_food_item = delete_food_item;
 exports.food_item_list = food_item_list;
 exports.profile = profile
+exports.orders = orders

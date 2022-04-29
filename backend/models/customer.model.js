@@ -127,6 +127,15 @@ async function restaurant_list(latitude,longitude){
     return {result};
 }
 
+async function orders(customer_id) {
+    const orderQuery = 'SELECT * FROM food_order WHERE customer_id = $1;'
+    const restaurantQuery = 'SELECT * FROM order_restaurant NATURAL INNER JOIN restaurant WHERE customer_id = $1;'
+    const orderTakenQuery = 'SELECT * FROM order_taken NATURAL INNER JOIN delivery WHERE customer_id = $1;'
+    const orderHasQuery = 'SELECT * FROM order_has NATURAL INNER JOIN order_restaurant NATURAL INNER JOIN food_items WHERE customer_id = $1;'
+    const [orderResult,restaurantResult,orderTakenResult,orderHasResult] = await Promise.all([db.query(orderQuery,[customer_id]),db.query(restaurantQuery,[customer_id]),db.query(orderTakenQuery,[customer_id]),db.query(orderHasQuery,customer_id)])
+    return {orderResult,restaurantResult,orderTakenResult,orderHasResult}
+}
+
 // with restDist as ( 
 //     select R.restaurant_id as restaurant_id,R.restaurant_name as restaurant_name, 
 //     ( 6371 * acos( cos( radians($1) ) * cos( radians( R.latitude ) ) 
@@ -148,3 +157,4 @@ exports.delivery_review = delivery_review;
 exports.order = order;
 exports.profile = profile;
 exports.restaurant_list = restaurant_list;
+exports.orders = orders

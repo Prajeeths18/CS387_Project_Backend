@@ -7,5 +7,6 @@ router.post("/register",deliveryController.register);
 router.post("/update",auth.authenticateToken,deliveryController.update);
 router.post("/availability",auth.authenticateToken,deliveryController.availability)
 router.get("/profile",auth.authenticateToken,deliveryController.profile);
+router.get("/orders",auth.authenticateToken,deliveryController.orders);
 
 module.exports = router;

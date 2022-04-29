@@ -46,7 +46,17 @@ async function profile(delivery_id) {
     return { result }
 }
 
+async function orders(delivery_id) {
+    const orderQuery = 'SELECT * FROM food_order NATURAL INNER JOIN order_taken WHERE delivery_id = $1;'
+    const restaurantQuery = 'SELECT * FROM order_taken NATURAL JOIN order_restaurant NATURAL INNER JOIN restaurant WHERE delivery_id = $1;'
+    const orderTakenQuery = 'SELECT * FROM order_taken NATURAL INNER JOIN delivery WHERE delivery_id = $1;'
+    const orderHasQuery = 'SELECT * FROM order_taken NATURAL INNER JOIN order_has NATURAL INNER JOIN order_restaurant NATURAL INNER JOIN food_items WHERE delivery_id = $1;'
+    const [orderResult,restaurantResult,orderTakenResult,orderHasResult] = await Promise.all([db.query(orderQuery,[delivery_id]),db.query(restaurantQuery,[delivery_id]),db.query(orderTakenQuery,[delivery_id]),db.query(orderHasQuery,[delivery_id])])
+    return {orderResult,restaurantResult,orderTakenResult,orderHasResult}
+}
+
 exports.register = register
 exports.update = update
 exports.availability = availability
 exports.profile = profile
+exports.orders = orders

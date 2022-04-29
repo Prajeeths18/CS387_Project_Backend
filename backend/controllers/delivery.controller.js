@@ -55,7 +55,22 @@ async function profile(req,res,next){
     )
 }
 
+async function orders(req,res,next) {
+    if((!req.user) || (!req.user.valid)) {
+        return res.sendStatus(500)
+    }
+    if(req.user.role !== 'DELIVERY') {
+        return res.sendStatus(500)
+    }
+    res.json(
+        await deliveryModel.profile(
+            req.user.user_id
+        )
+    )
+}
+
 exports.register = register
 exports.update = update
 exports.availability = availability
 exports.profile = profile
+exports.orders = orders

@@ -184,6 +184,20 @@ async function profile(req,res,next){
     )
 }
 
+async function orders(req,res,next) {
+    if((!req.user) || (!req.user.valid)) {
+        return res.sendStatus(500)
+    }
+    if(req.user.role !== 'CUSTOMER') {
+        return res.sendStatus(500)
+    }
+    res.json(
+        await customerModel.profile(
+            req.user.user_id
+        )
+    )
+}
+
 exports.register = register;
 exports.update = update;
 exports.add_address = add_address;
@@ -195,5 +209,6 @@ exports.delivery_review = delivery_review;
 exports.order = order;
 exports.restaurant_list = restaurant_list;
 exports.profile = profile;
+exports.orders = orders
 
 //req.user.user_id //req.user.

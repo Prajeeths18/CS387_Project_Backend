@@ -10,5 +10,6 @@ router.post("/update_food_item",auth.authenticateToken,restaurantController.upda
 router.post("/delete_food_item",auth.authenticateToken,restaurantController.delete_food_item);
 router.get("/food_item_list",auth.authenticateToken,restaurantController.food_item_list)
 router.get("/profile",auth.authenticateToken,restaurantController.profile);
+router.get("/orders",auth.authenticateToken,restaurantController.orders);
 
 module.exports = router;
