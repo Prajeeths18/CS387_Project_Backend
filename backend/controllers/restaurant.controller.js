@@ -22,24 +22,23 @@ async function register(req,res,next){
 
 async function add_item(req,res,next){
     res.json(
-        
-    await restaurantModel.add_item(
-        req.body.restaurant_id,
-        req.body.name,
-        req.body.cost, 
-        req.body.available, 
-        req.body.type, 
-        req.body.course_type,
-        req.body.specific_discount,
-        req.body.preparation_time,
-        )
+        await restaurantModel.add_item(
+            req.user.user_id,
+            req.body.name,
+            req.body.cost, 
+            req.body.available, 
+            req.body.type, 
+            req.body.course_type,
+            req.body.specific_discount,
+            req.body.preparation_time,
+            )
     )
 }
 
 async function update_details(req,res,next){
     res.json(
         await restaurantModel.update_details(
-            req.body.restaurant_id,
+            req.user.user_id,
             req.body.mobile_no,
             req.body.email,
             req.body.address,

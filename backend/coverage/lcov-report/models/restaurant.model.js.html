@@ -23,9 +23,9 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">48.14% </span>
+                <span class="strong">62.96% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>13/27</span>
+                <span class='fraction'>17/27</span>
             </div>
         
             
@@ -37,16 +37,16 @@
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">28.57% </span>
+                <span class="strong">57.14% </span>
                 <span class="quiet">Functions</span>
-                <span class='fraction'>2/7</span>
+                <span class='fraction'>4/7</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">52% </span>
+                <span class="strong">64% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>13/25</span>
+                <span class='fraction'>16/25</span>
             </div>
         
             
@@ -61,7 +61,7 @@
             </div>
         </template>
     </div>
-    <div class='status-line low'></div>
+    <div class='status-line medium'></div>
     <pre><table class="coverage">
 <tr><td class="line-count quiet"><a name='L1'></a><a href='#L1'>1</a>
 <a name='L2'></a><a href='#L2'>2</a>
@@ -277,30 +277,30 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -429,22 +429,22 @@ async function add_item(restaurant_id, name, cost, available, type, course_type,
     INSERT INTO food_items (restaurant_id,food_name,available,preparation_time,specific_discount,cost) VALUES ($1,$2,$3,$4,$5,$6);
     `
 &nbsp;
-    const result = await db.transaction([queryType,queryItem],[[name, type, course_type], [restaurant_id, name, available, preparation_time, specific_discount, cost]]).catch(<span class="fstat-no" title="function not covered" >e=</span>&gt;<span class="cstat-no" title="statement not covered" >e)</span>;
+    const result = await db.transaction([queryType,queryItem],[[name, type, course_type], [restaurant_id, name, available, preparation_time, specific_discount, cost]]).catch(e=&gt;e);
     return { result };
 }
 &nbsp;
-async function <span class="fstat-no" title="function not covered" >update_details(</span>
+async function update_details(
     
 ){
 &nbsp;
-    const queryRest = <span class="cstat-no" title="statement not covered" >` SELECT * FROM restaurant WHERE restaurant_id=$1;</span>
+    const queryRest = ` SELECT * FROM restaurant WHERE restaurant_id=$1;
     `
 &nbsp;
-    const queryUpdate = <span class="cstat-no" title="statement not covered" >` UPDATE restaurant SET mobile_no=$2,email=$3,address=$4,</span>
+    const queryUpdate = ` UPDATE restaurant SET mobile_no=$2,email=$3,address=$4,
     overall_discount=$5,max_safety_follow=$6,open_time=$7,close_time=$8 WHERE restaurant_id=$1;
     `
 &nbsp;
-    const result = <span class="cstat-no" title="statement not covered" >await db.transaction([queryRest,queryUpdate],[[restaurant_id],[mobile_no,email,address,overall_discount,max_safety_follow,open_time,close_time]]).catch(e&gt;=e);</span>
+    const result = await db.transaction([queryRest,queryUpdate],[[restaurant_id],[mobile_no,email,address,overall_discount,max_safety_follow,open_time,close_time]]).catch(e&gt;=e);
 <span class="cstat-no" title="statement not covered" >    return {result};</span>
 &nbsp;
 }
@@ -502,7 +502,7 @@ exports.delete_food_item = delete_food_item</pre></td></tr></table></pre>
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at Fri Apr 29 2022 09:20:47 GMT+0530 (India Standard Time)
+                at Fri Apr 29 2022 10:05:20 GMT+0530 (India Standard Time)
             </div>
         <script src="../prettify.js"></script>
         <script>

@@ -75,49 +75,51 @@ describe('Restaurant test suite',() => {
         let next = () => {}
         await restaurantController.add_item(req,res,next);
         user = await db.query("SELECT * FROM food_type WHERE food_name=$1",["poori"]).catch(e=>e).then(x=>x.rows[0]);
-        console.log(res)
-        //assert(res.result.result.rowCount === 1);
+        expect(res.result.result.rowCount === 1);
     })
 
-    // it('[T-3] add-item fail',async () => {
-    //     const req = { body: {
-    //                             "restaurant_id": "test_user_1",
-    //                             "name": "poori",
-    //                             "cost": 200,
-    //                             "available": true,
-    //                             "type": 'NON_VEG',
-    //                             "course_type": 'STARTERS',
-    //                             "specific_discount": 5,
-    //                             "preparation_time":10
+    it('[T-3] add-item fail',async () => {
+        const req = { body: {
+                                "restaurant_id": "test_user_1",
+                                "name": "poori",
+                                "cost": 200,
+                                "available": true,
+                                "type": 'NON_VEG',
+                                "course_type": 'STARTERS',
+                                "specific_discount": 5,
+                                "preparation_time":10
                                 
-    //                         } }
-    //     let res = {};
-    //     res.json = (x) => { res.result = x };
-    //     let next = () => {}
-    //     await restaurantController.add_item(req,res,next);
-    //     user = await db.query("SELECT * FROM food_type WHERE food_name=$1",["poori"]).catch(e=>e).then(x=>x.rows[0]);
-    //     expect(res.result.result.severity === "ERROR");
+                            } }
+        let res = {};
+        res.json = (x) => { res.result = x };
+        let next = () => {}
+        await restaurantController.add_item(req,res,next);
+        user = await db.query("SELECT * FROM food_type WHERE food_name=$1",["poori"]).catch(e=>e).then(x=>x.rows[0]);
+        expect(res.result.result.severity === "ERROR");
 
-    // })
+    })
 
-    // it('[T-4] Update Details - Success', async () => {
-    //     const req = { body: {
-    //                             "username": "test_user_1",
-    //                             "password": "dummy_password",
-    //                             "address": "84, Near Honda Showroom, Adchini, New Delhi",
-    //                             "latitude": 28.53538174,
-    //                             "longitude": 77.19692286,
-    //                             "mobile": 9999999999,
-    //                             "email": "test_user_1@test.com",
+    it('[T-4] Update Details - Success', async () => {
+        const req = { body: {
+                                "username": "test_user_2",
+                                "password": "dummy_password",
+                                "address": "84, Near Honda Showroom, Adchini, New Delhi",
+                                "latitude": 28.53538174,
+                                "longitude": 77.19692286,
+                                "mobile": 9999999999,
+                                "email": "test_user_1@test.com",
                                 
-    //                         } }
-    //     let res = {};
-    //     res.json = (x) => { res.result = x };
-    //     let next = () => {}
-    //     await restaurantController.register(req,res,next);
-    //     user = await db.query("SELECT user_id,username,role,valid FROM gen_user WHERE username=$1",["test_user_1"]).catch(e=>e).then(x=>x.rows[0]);
-    //     expect(res.result.rowCount === 1);
-    // })
+                            },
+                        user: {
+                            user_id: user_id_task
+                        } }
+        let res = {};
+        res.json = (x) => { res.result = x };
+        let next = () => {}
+        await restaurantController.update_details(req,res,next);
+        user = await db.query("SELECT user_id,username,role,valid FROM gen_user WHERE username=$1",["test_user_1"]).catch(e=>e).then(x=>x.rows[0]);
+        expect(res.result.rowCount === 1);
+    })
 
     afterAll(async () => {
         await db.query('DELETE FROM food_type WHERE food_name = $1', ["kadaipoori"]);

@@ -23,21 +23,23 @@ async function update(req,res,next) {
             req.body.mobile,
             req.body.email
         )
-    );}
+    );
+}
 
-    async function availability(req,res,next) {
-        if((!req.user) || (!req.user.valid)) {
-            return res.sendStatus(500)
-        }
-        if(req.user.role !== 'DELIVERY') {
-            return res.sendStatus(500)
-        }
-        res.json(
-            await deliveryModel.availability(
-                req.user.user_id,
-                req.user.available,
-            )
-        );}
+async function availability(req,res,next) {
+    if((!req.user) || (!req.user.valid)) {
+        return res.sendStatus(500)
+    }
+    if(req.user.role !== 'DELIVERY') {
+        return res.sendStatus(500)
+    }
+    res.json(
+        await deliveryModel.availability(
+            req.user.user_id,
+            req.user.available,
+        )
+    );
+}
 
 exports.register = register
 exports.update = update
