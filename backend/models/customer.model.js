@@ -131,8 +131,8 @@ async function orders(customer_id) {
     const orderQuery = 'SELECT * FROM food_order WHERE customer_id = $1;'
     const restaurantQuery = 'SELECT * FROM order_restaurant NATURAL INNER JOIN restaurant WHERE customer_id = $1;'
     const orderTakenQuery = 'SELECT * FROM order_taken NATURAL INNER JOIN delivery WHERE customer_id = $1;'
-    const orderHasQuery = 'SELECT * FROM order_has NATURAL INNER JOIN order_restaurant NATURAL INNER JOIN food_items WHERE customer_id = $1;'
-    const [orderResult,restaurantResult,orderTakenResult,orderHasResult] = await Promise.all([db.query(orderQuery,[customer_id]),db.query(restaurantQuery,[customer_id]),db.query(orderTakenQuery,[customer_id]),db.query(orderHasQuery,customer_id)])
+    const orderHasQuery = 'SELECT * FROM order_has WHERE customer_id = $1;'
+    const [orderResult,restaurantResult,orderTakenResult,orderHasResult] = await Promise.all([db.query(orderQuery,[customer_id]),db.query(restaurantQuery,[customer_id]),db.query(orderTakenQuery,[customer_id]),db.query(orderHasQuery,[customer_id])])
     return {orderResult,restaurantResult,orderTakenResult,orderHasResult}
 }
 

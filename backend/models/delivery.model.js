@@ -64,9 +64,16 @@ async function freeOrders(delivery_id) {
     return {orderResult,restaurantResult,orderTakenResult,orderHasResult}
 }
 
+async function acceptOrder(order_id,customer_id,delivery_id) {
+    const acceptQuery = 'UPDATE order_taken SET delivery_id=$1 WHERE order_id=$2 AND customer_id=$3;'
+    const acceptResult = await db.query(acceptQuery,[delivery_id,order_id,customer_id])
+    return {acceptResult}
+}
+
 exports.register = register
 exports.update = update
 exports.availability = availability
 exports.profile = profile
 exports.orders = orders
 exports.freeOrders = freeOrders
+exports.acceptOrder = acceptOrder

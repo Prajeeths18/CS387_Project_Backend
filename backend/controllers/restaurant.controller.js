@@ -135,6 +135,37 @@ async function orders(req,res,next) {
     )
 }
 
+async function freeOrders(req,res,next) {
+    if((!req.user) || (!req.user.valid)) {
+        return res.sendStatus(500)
+    }
+    if(req.user.role !== 'RESTAURANT') {
+        return res.sendStatus(500)
+    }
+    res.json(
+        await restaurantModel.freeOrders(
+            req.user.user_id
+        )
+    )
+}
+
+async function acceptOrder(req,res,next) {
+    if((!req.user) || (!req.user.valid)) {
+        return res.sendStatus(500)
+    }
+    if(req.user.role !== 'RESTAURANT') {
+        return res.sendStatus(500)
+    }
+    res.json(
+        await restaurantModel.freeOrders(
+            req.body.order_id,
+            req.body.customer_id,
+            req.body.preparation_time,
+            req.user.user_id
+        )
+    )
+}
+
 exports.register = register;
 exports.add_item=add_item;
 exports.update_details = update_details;
@@ -143,3 +174,5 @@ exports.delete_food_item = delete_food_item;
 exports.food_item_list = food_item_list;
 exports.profile = profile
 exports.orders = orders
+exports.freeOrders = freeOrders
+exports.acceptOrder = acceptOrder

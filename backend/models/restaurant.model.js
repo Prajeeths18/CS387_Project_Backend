@@ -180,6 +180,21 @@ async function orders(restaurant_id) {
     return {orderResult,restaurantResult,orderTakenResult,orderHasResult}
 }
 
+async function freeOrders(restaurant_id) {
+    const orderQuery = 'SELECT * FROM food_order NATURAL INNER JOIN order_restaurant WHERE restaurant_id=$1 AND expected_delivery_time is NULL;'
+    const restaurantQuery = 'SELECT * FROM order_restaurant NATURAL INNER JOIN restaurant WHERE restaurant_id = $1 AND expected_delivery_time is NULL;'
+    const orderTakenQuery = 'SELECT * FROM order_restaurant NATURAL INNER JOIN order_taken NATURAL INNER JOIN delivery WHERE restaurant_id = $1 AND expected_delivery_time is NULL;'
+    const orderHasQuery = 'SELECT * FROM order_has NATURAL INNER JOIN order_restaurant NATURAL INNER JOIN food_items WHERE restaurant_id = $1 AND expected_delivery_time is NULL;'
+    const [orderResult,restaurantResult,orderTakenResult,orderHasResult] = await Promise.all([db.query(orderQuery,[restaurant_id]),db.query(restaurantQuery,[restaurant_id]),db.query(orderTakenQuery,[restaurant_id]),db.query(orderHasQuery,[restaurant_id])])
+    return {orderResult,restaurantResult,orderTakenResult,orderHasResult}
+}
+
+async function acceptOrder(order_id,customer_id,preparation_time,restaurant_id) {
+    const acceptQuery = 'UPDATE order_restaurant SET expected_delivery_time=$1 WHERE order_id=$2 AND customer_id=$3 AND restaurant_id=$4;'
+    const acceptResult = await db.query(acceptQuery,[preparation_time,order_id,customer_id,restaurant_id])
+    return {acceptResult}
+}
+
 exports.register = register
 exports.add_item=add_item
 exports.update_details = update_details
@@ -188,3 +203,5 @@ exports.delete_food_item = delete_food_item
 exports.food_item_list = food_item_list
 exports.profile = profile
 exports.orders = orders
+exports.freeOrders = freeOrders
+exports.acceptOrder = acceptOrder
