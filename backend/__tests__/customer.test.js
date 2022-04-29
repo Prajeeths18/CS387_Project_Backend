@@ -56,10 +56,10 @@ describe('Customer Routes test suite',() => {
         await customerController.register(req,res,next);
         user = await db.query("SELECT user_id,username,role,valid FROM gen_user WHERE username=$1",["test_user_1"]).catch(e=>e).then(x=>x.rows[0]);
         // console.log(pgp.as.format("INSERT INTO food_order (order_id,customer_id,order_place_time,latitude,longitude) VALUES (1,$1,'2019-03-01 10:00+5:30',28.53538174,77.19692286);",[user.user_id]))
-        await db.query("INSERT INTO food_order (order_id,customer_id,order_place_time,latitude,longitude) VALUES (1,$1,'2019-03-01 10:00+5:30',28.53538174,77.19692286);",[user.user_id])
-        await db.query("INSERT INTO order_restaurant (order_id,customer_id,restaurant_id) VALUES (1,$1,$2);",[user.user_id,restaurant_id]);
-        await db.query("INSERT INTO order_has (order_id, customer_id, food_name, quantity) VALUES (1,$1,'test_food',2);",[user.user_id]);
-        await db.query("INSERT INTO order_taken (order_id,customer_id,delivery_id) VALUES (1,$1,$2);",[user.user_id,delivery_id]);
+        // await db.query("INSERT INTO food_order (order_id,customer_id,order_place_time,latitude,longitude) VALUES (1,$1,'2019-03-01 10:00+5:30',28.53538174,77.19692286);",[user.user_id])
+        // await db.query("INSERT INTO order_restaurant (order_id,customer_id,restaurant_id) VALUES (1,$1,$2);",[user.user_id,restaurant_id]);
+        // await db.query("INSERT INTO order_has (order_id, customer_id, food_name, quantity) VALUES (1,$1,'test_food',2);",[user.user_id]);
+        // await db.query("INSERT INTO order_taken (order_id,customer_id,delivery_id) VALUES (1,$1,$2);",[user.user_id,delivery_id]);
         // const res = await supertest(app)
                             // .post('/api/customer/register')
                             // .type('json')
@@ -73,7 +73,8 @@ describe('Customer Routes test suite',() => {
                             //     "email": "test_user_1@test.com"
                             // })
                             // .set('Accept','application/json');
-        expect(res.result.rowCount === 1);
+        // console.log(res.result.result)
+        expect(res.result.result.rowCount).toBe(1);
     }),
     it('[T-1] Register failure - Duplicate username', async () => {
         const req = { body: {
@@ -89,8 +90,8 @@ describe('Customer Routes test suite',() => {
         res.json = (x) => { res.result = x };
         let next = () => {}
         await customerController.register(req,res,next)
-        expect(res.result.severity === "ERROR");
-        expect(res.result.detail === 'Key (username)=(test_user_1) already exists.');
+        expect(res.result.result.severity).toBe("ERROR");
+        expect(res.result.result.detail).toBe('Key (username)=(test_user_1) already exists.');
     })
     it('[T-2] Update - Invalid auth', async () => {
         let req = {
@@ -104,72 +105,72 @@ describe('Customer Routes test suite',() => {
         res.sendStatus = (x) => {res.status = x};
         let next = () => {}
         await customerController.update(req,res,next);
-        expect(res.status === 500);
-        expect(res.result === null);
+        expect(res.status).toBe(500);
+        expect(res.result).toBe(undefined);
         await customerController.add_address(req,res,next);
-        expect(res.status === 500);
-        expect(res.result === null);
+        expect(res.status).toBe(500);
+        expect(res.result).toBe(undefined);
         await customerController.update_address(req,res,next);
-        expect(res.status === 500);
-        expect(res.result === null);
+        expect(res.status).toBe(500);
+        expect(res.result).toBe(undefined);
         await customerController.delete_address(req,res,next);
-        expect(res.status === 500);
-        expect(res.result === null);
+        expect(res.status).toBe(500);
+        expect(res.result).toBe(undefined);
         await customerController.delivery_review(req,res,next);
-        expect(res.status === 500);
-        expect(res.result === null);
+        expect(res.status).toBe(500);
+        expect(res.result).toBe(undefined);
         await customerController.food_review(req,res,next);
-        expect(res.status === 500);
-        expect(res.result === null);
+        expect(res.status).toBe(500);
+        expect(res.result).toBe(undefined);
         await customerController.restaurant_review(req,res,next);
-        expect(res.status === 500);
-        expect(res.result === null);
+        expect(res.status).toBe(500);
+        expect(res.result).toBe(undefined);
         req.user = user;
         req.user.role = 'RESTAURANT';
         await customerController.update(req,res,next);
-        expect(res.status === 500);
-        expect(res.result === null);
+        expect(res.status).toBe(500);
+        expect(res.result).toBe(undefined);
         await customerController.add_address(req,res,next);
-        expect(res.status === 500);
-        expect(res.result === null);
+        expect(res.status).toBe(500);
+        expect(res.result).toBe(undefined);
         await customerController.update_address(req,res,next);
-        expect(res.status === 500);
-        expect(res.result === null);
+        expect(res.status).toBe(500);
+        expect(res.result).toBe(undefined);
         await customerController.delete_address(req,res,next);
-        expect(res.status === 500);
-        expect(res.result === null);
+        expect(res.status).toBe(500);
+        expect(res.result).toBe(undefined);
         await customerController.delivery_review(req,res,next);
-        expect(res.status === 500);
-        expect(res.result === null);
+        expect(res.status).toBe(500);
+        expect(res.result).toBe(undefined);
         await customerController.food_review(req,res,next);
-        expect(res.status === 500);
-        expect(res.result === null);
+        expect(res.status).toBe(500);
+        expect(res.result).toBe(undefined);
         await customerController.restaurant_review(req,res,next);
-        expect(res.status === 500);
-        expect(res.result === null);
+        expect(res.status).toBe(500);
+        expect(res.result).toBe(undefined);
         req.user.role = 'CUSTOMER';
         req.user.valid = false;
         await customerController.update(req,res,next);
-        expect(res.status === 500);
-        expect(res.result === null);
+        expect(res.status).toBe(500);
+        expect(res.result).toBe(undefined);
         await customerController.add_address(req,res,next);
-        expect(res.status === 500);
-        expect(res.result === null);
+        expect(res.status).toBe(500);
+        expect(res.result).toBe(undefined);
         await customerController.update_address(req,res,next);
-        expect(res.status === 500);
-        expect(res.result === null);
+        expect(res.status).toBe(500);
+        expect(res.result).toBe(undefined);
         await customerController.delete_address(req,res,next);
-        expect(res.status === 500);
-        expect(res.result === null);
+        expect(res.status).toBe(500);
+        expect(res.result).toBe(undefined);
         await customerController.delivery_review(req,res,next);
-        expect(res.status === 500);
-        expect(res.result === null);
+        expect(res.status).toBe(500);
+        expect(res.result).toBe(undefined);
         await customerController.food_review(req,res,next);
-        expect(res.status === 500);
-        expect(res.result === null);
+        expect(res.status).toBe(500);
+        expect(res.result).toBe(undefined);
         await customerController.restaurant_review(req,res,next);
-        expect(res.status === 500);
-        expect(res.result === null);
+        expect(res.status).toBe(500);
+        expect(res.result).toBe(undefined);
         req.user.valid = true;
     })
     it('[T-3] Update - Full Success',async () => {
@@ -186,9 +187,9 @@ describe('Customer Routes test suite',() => {
         let next = () => {}
         await customerController.update(req,res,next);
         let temp = await db.query('SELECT mobile_no, email FROM customer WHERE customer_id = $1;',[user.user_id]);
-        expect(res.result.rowCount === 1);
-        expect(temp.rows[0].mobile_no === 9999999990);
-        expect(temp.rows[0].email === "stupid_email@idiot.com");
+        expect(res.result.result.rowCount).toBe(1);
+        expect(temp.rows[0].mobile_no).toBe(9999999990);
+        expect(temp.rows[0].email).toBe("stupid_email@idiot.com");
     })
     it('[T-4] Update - Missing Mobile Success',async () => {
         let req = {
@@ -206,9 +207,9 @@ describe('Customer Routes test suite',() => {
         req.body.email = "new_stupid@stupid.com"
         await customerController.update(req,res,next);
         temp = await db.query('SELECT mobile_no, email FROM customer WHERE customer_id = $1;',[user.user_id]);
-        expect(res.result.rowCount === 1);
-        expect(temp.rows[0].mobile_no === 9999999990);
-        expect(temp.rows[0].email === "new_stupid@stupid.com");
+        expect(res.result.result.rowCount).toBe(1);
+        expect(temp.rows[0].mobile_no).toBe(9999999990);
+        expect(temp.rows[0].email).toBe("new_stupid@stupid.com");
     })
     it('[T-5] Update - Missing email Success',async () => {
         let req = {
@@ -226,9 +227,9 @@ describe('Customer Routes test suite',() => {
         req.body.email = undefined;
         await customerController.update(req,res,next);
         temp = await db.query('SELECT mobile_no, email FROM customer WHERE customer_id = $1;',[user.user_id]);
-        expect(res.result.rowCount === 1);
-        expect(temp.rows[0].mobile_no === 9990999999);
-        expect(temp.rows[0].email === "new_stupid@stupid.com");
+        expect(res.result.result.rowCount).toBe(1);
+        expect(temp.rows[0].mobile_no).toBe(9990999999);
+        expect(temp.rows[0].email).toBe("new_stupid@stupid.com");
     })
     it('[T-6] Update - Empty Success',async () => {
         let req = {
@@ -246,9 +247,9 @@ describe('Customer Routes test suite',() => {
         req.body.email = undefined;
         await customerController.update(req,res,next);
         temp = await db.query('SELECT mobile_no, email FROM customer WHERE customer_id = $1;',[user.user_id]);
-        expect(res.result.rowCount === 1);
-        expect(temp.rows[0].mobile_no === 9990999999);
-        expect(temp.rows[0].email === "new_stupid@stupid.com");
+        expect(res.result.result.rowCount).toBe(1);
+        expect(temp.rows[0].mobile_no).toBe(9990999999);
+        expect(temp.rows[0].email).toBe("new_stupid@stupid.com");
     })
     it('[T-7] Update - Missing customer', async () => {
         let req = {
@@ -265,7 +266,7 @@ describe('Customer Routes test suite',() => {
         let user_id = req.user.user_id;
         req.user.user_id = -1;
         await customerController.update(req,res,next);
-        expect(res.result.rowCount === 0)
+        expect(res.result.rowCount).toBe(0)
         user.user_id = user_id;
     }) 
     it('[T-8] Delete address Success', async () => {
@@ -281,7 +282,7 @@ describe('Customer Routes test suite',() => {
         res.sendStatus = (x) => {res.status = x};
         let next = () => {}
         await customerController.delete_address(req,res,next);
-        expect(res.result.rowCount === 1);
+        expect(res.result.result.rowCount).toBe(1);
     });
     it('[T-9] Add new address Success', async () => {
         let req = {
@@ -297,7 +298,7 @@ describe('Customer Routes test suite',() => {
         res.sendStatus = (x) => {res.status = x};
         let next = () => {}
         await customerController.add_address(req,res,next);
-        expect(res.result.rowCount === 1);
+        expect(res.result.result[1].rowCount).toBe(1);
     })
     it('[T-10] Update address Success', async () => {
         let req = {
@@ -315,9 +316,28 @@ describe('Customer Routes test suite',() => {
         res.sendStatus = (x) => {res.status = x};
         let next = () => {}
         await customerController.update_address(req,res,next);
-        expect(res.result.result[0].rowCount === 1)
-        expect(res.result.result[1].rowCount === 0)
-        expect(res.result.result[2].rowCount === 1)
+        expect(res.result.result[0].rowCount).toBe(1)
+        expect(res.result.result[1].rowCount).toBe(0)
+        expect(res.result.result[2].rowCount).toBe(1)
+    })
+    it('[T-10] Place Order Success', async () => {
+        let req = {
+            body: {
+                "restaurant_id": restaurant_id,
+                "timestamp":"2019-06-21 10:00+5:30",
+                "food_pairs":[["test_food",2]],
+                "latitude": 28.53549308,
+                "longitude": 77.19747473
+            },
+            user: user
+        }
+        let res = {}
+        res.json = (x) => { res.result = x};
+        res.sendStatus = (x) => {res.status = x};
+        let next = () => {}
+        await customerController.order(req,res,next);
+        expect(res.result.order_id).toBe(1)
+        await db.query('UPDATE order_taken SET delivery_id=$1 WHERE customer_id=$2',[delivery_id,user.user_id])
     })
     it('[T-11] Add restaurant review', async () => {
         let req = {
@@ -334,11 +354,11 @@ describe('Customer Routes test suite',() => {
         res.sendStatus = (x) => {res.status = x};
         let next = () => {}
         await customerController.restaurant_review(req,res,next);
-        expect(res.result.rowCount === 1)
+        expect(res.result.result.rowCount).toBe(1)
         let temp = await db.query("SELECT restaurant_rating, restaurant_review FROM order_restaurant WHERE order_id=1 AND customer_id=$1 AND restaurant_id=$2",[user.user_id,restaurant_id]);
         // console.log(temp)
-        expect(temp.rows[0].restaurant_rating === 3)
-        expect(temp.rows[0].restaurant_review === 'random nonsense')
+        expect(temp.rows[0].restaurant_rating).toBe("3")
+        expect(temp.rows[0].restaurant_review).toBe('random nonsense')
     })
     it('[T-11] Add food review', async () => {
         let req = {
@@ -355,10 +375,10 @@ describe('Customer Routes test suite',() => {
         res.sendStatus = (x) => {res.status = x};
         let next = () => {}
         await customerController.food_review(req,res,next);
-        expect(res.result.rowCount === 1)
+        expect(res.result.result.rowCount).toBe(1)
         let temp = await db.query("SELECT food_rating, food_review FROM order_has WHERE order_id=1 AND customer_id=$1 AND food_name=$2",[user.user_id,"test_food"]);
-        expect(temp.rows[0].food_rating === 2)
-        expect(temp.rows[0].food_review === 'more random nonsense')
+        expect(temp.rows[0].food_rating).toBe("2")
+        expect(temp.rows[0].food_review).toBe('more random nonsense')
     })
     it('[T-11] Add delivery review', async () => {
         let req = {
@@ -375,11 +395,12 @@ describe('Customer Routes test suite',() => {
         res.sendStatus = (x) => {res.status = x};
         let next = () => {}
         await customerController.delivery_review(req,res,next);
-        expect(res.result.rowCount === 1)
+        // console.log(res)
+        expect(res.result.result.rowCount).toBe(1)
         let temp = await db.query("SELECT delivery_rating, delivery_review FROM order_taken WHERE order_id=1 AND customer_id=$1 AND delivery_id=$2;",[user.user_id,delivery_id]).catch(e=>e);
         // console.log(temp)
-        expect(temp.rows[0].delivery_rating === 4)
-        expect(temp.rows[0].delivery_review === 'more more random nonsense')
+        expect(temp.rows[0].delivery_rating).toBe("4")
+        expect(temp.rows[0].delivery_review).toBe('more more random nonsense')
     })
     afterAll(async ()=>{
         await db.query("DELETE FROM food_items WHERE food_name = $1;",['test_food']);

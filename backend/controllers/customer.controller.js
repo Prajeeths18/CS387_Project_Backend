@@ -83,6 +83,25 @@ async function update_address(req,res,next) {
     );
 }
 
+async function order(req,res,next) {
+    if((!req.user) || (!req.user.valid)) {
+        return res.sendStatus(500)
+    }
+    if(req.user.role !== 'CUSTOMER') {
+        return res.sendStatus(500)
+    }
+    res.json(
+        await customerModel.order(
+            req.user.user_id,
+            req.body.restaurant_id,
+            req.body.timestamp,
+            req.body.latitude,
+            req.body.longitude,
+            req.body.food_pairs
+        )
+    );
+}
+
 async function restaurant_review(req,res,next) {
     if((!req.user) || (!req.user.valid)) {
         return res.sendStatus(500)
@@ -144,6 +163,6 @@ exports.update_address = update_address;
 exports.restaurant_review = restaurant_review;
 exports.food_review = food_review;
 exports.delivery_review = delivery_review;
-
+exports.order = order;
 
 //req.user.user_id //req.user.

@@ -1,5 +1,5 @@
 const db = require('../db');
-// const pgp = require('pg-promise');
+const pgp = require('pg-promise');
 const bcrypt = require('bcrypt');
 
 async function register(username, password, address, latitude, longitude, mobile, email) {
@@ -53,6 +53,28 @@ async function update_address(customer_id,old_latitude,old_longitude,address,lat
     return {result};
 }
 
+async function order(customer_id, restaurant_id, timestamp, latitude, longitude, food_pairs) {
+    let order_id;
+    const foodOrderQuery = 'INSERT INTO food_order (order_id,customer_id,order_place_time,latitude,longitude) SELECT COALESCE(MAX(order_id)+1,1),$1,$2,$3,$4 FROM food_order WHERE customer_id=$1 RETURNING order_id;'
+    const orderRestaurantQuery = 'INSERT INTO order_restaurant (order_id,customer_id,restaurant_id) VALUES ($1,$2,$3);'
+    const orderTakenQuery = 'INSERT INTO order_taken (order_id,customer_id,delivery_id) VALUES ($1,$2,NULL);'
+    const client = await db.pool.connect();
+    try {
+        await client.query('BEGIN')
+        order_id = await client.query(foodOrderQuery,[customer_id,timestamp,latitude,longitude]).then(x=>x.rows[0].order_id);
+        await client.query(orderRestaurantQuery,[order_id,customer_id,restaurant_id]);
+        await client.query(`INSERT INTO order_has (order_id,customer_id,food_name,quantity) VALUES ${food_pairs.map((x)=>`(${order_id},${customer_id},'${x[0]}',${x[1]})`).join(',')};`)
+        await client.query(orderTakenQuery,[order_id,customer_id]);
+        await client.query('COMMIT');
+        return {order_id};
+      } catch (e) {
+        await client.query('ROLLBACK')
+        throw e
+      } finally {
+        client.release()
+      }
+}
+
 async function restaurant_review(order_id, customer_id, restaurant_id, rating, review) {
     const query = 'UPDATE order_restaurant SET restaurant_review=$4,restaurant_rating=$3 WHERE order_id=$1 AND customer_id=$2 AND restaurant_id=$5;'
     const result = await db.query(query,[order_id,customer_id,rating,review,restaurant_id]).catch(e=>e);
@@ -66,9 +88,19 @@ async function food_review(order_id, customer_id, rating, review, food_name) {
 }
 
 async function delivery_review(order_id, customer_id, rating, review) {
-    const query = 'UPDATE order_taken SET delivery_review=$3,delivery_rating=$3 WHERE order_id=$1 AND customer_id=$2;'
+    const query = 'UPDATE order_taken SET delivery_review=$4,delivery_rating=$3 WHERE order_id=$1 AND customer_id=$2;'
     const result = await db.query(query,[order_id,customer_id,rating,review]).catch(e=>e);
     return {result}
+}
+
+async function profile(customer_id) {
+    const customerQuery = 'SELECT mobile_no,email,subscription FROM customer WHERE customer_id=$1;'
+    const addressQuery = 'SELECT address FROM coordinates INNER JOIN customer_address WHERE customer_address.customer_id=$1;'
+    const [customerResult, addressResult] = await Promise.all([
+        db.pool.query(customerQuery,[customer_id]).catch(e=>e),
+        db.pool.query(addressQuery,[customer_id]).catch(e=>e)
+    ])
+    return {customerResult,addressResult}
 }
 
 exports.register = register;
@@ -79,3 +111,5 @@ exports.update_address = update_address;
 exports.restaurant_review = restaurant_review;
 exports.food_review = food_review;
 exports.delivery_review = delivery_review;
+exports.order = order;
+exports.profile = profile;

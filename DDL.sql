@@ -26,7 +26,7 @@ CREATE TABLE gen_user (
 DROP TABLE IF EXISTS customer CASCADE;
 
 CREATE TABLE customer (
-    customer_id bigserial NOT NULL,
+    customer_id bigint NOT NULL,
     mobile_no bigint NOT NULL,
     email varchar(254), --customer email can be null, this means they did not provide an email--
     subscription boolean default false NOT NULL,
@@ -49,7 +49,7 @@ CREATE TABLE coordinates (
 DROP TABLE IF EXISTS restaurant CASCADE;
 
 CREATE TABLE restaurant (
-    restaurant_id bigserial NOT NULL,
+    restaurant_id bigint NOT NULL,
     restaurant_name varchar(256) NOT NULL,
     mobile_no bigint NOT NULL,
     email varchar(254) default NULL, --restaurant email can be null, this means they did not provide an email--
@@ -70,7 +70,7 @@ CREATE TABLE restaurant (
 DROP TABLE IF EXISTS customer_address CASCADE;
 
 CREATE TABLE customer_address (
-    customer_id bigserial NOT NULL,
+    customer_id bigint NOT NULL,
     latitude float NOT NULL,
     longitude float NOT NULL,
     primary key(customer_id, latitude, longitude),
@@ -82,7 +82,7 @@ CREATE TABLE customer_address (
 DROP TABLE IF EXISTS delivery CASCADE;
 
 CREATE TABLE delivery (
-    delivery_id bigserial NOT NULL,
+    delivery_id bigint NOT NULL,
     mobile_no bigint NOT NULL,
     email varchar(254), --delivery email can be null, this means the delivery partner did not provide an email--
     available BOOLEAN default false NOT NULL,
@@ -96,7 +96,7 @@ DROP TABLE IF EXISTS food_order CASCADE;
 
 CREATE TABLE food_order (
     order_id integer NOT NULL,
-    customer_id bigserial NOT NULL,
+    customer_id bigint NOT NULL,
     order_place_time timestamp with time zone NOT NULL,
     expected_delivery_time timestamp with time zone, -- null means order was rejected
     actual_delivery_time timestamp with time zone, -- null means yet to deliver
@@ -111,8 +111,8 @@ CREATE TABLE food_order (
 DROP TABLE IF EXISTS favorites CASCADE;
 
 CREATE TABLE favorites (
-    customer_id bigserial NOT NULL,
-    restaurant_id bigserial NOT NULL,
+    customer_id bigint NOT NULL,
+    restaurant_id bigint NOT NULL,
     primary key(customer_id, restaurant_id),
     foreign key(customer_id) references customer on delete cascade,
     foreign key(restaurant_id) references restaurant on delete cascade
@@ -132,7 +132,7 @@ create table food_type (
 DROP TABLE IF EXISTS food_items CASCADE;
 
 create table food_items (
-    restaurant_id bigserial NOT NULL,
+    restaurant_id bigint NOT NULL,
     food_name varchar(256) NOT NULL,
     available boolean NOT NULL,
     preparation_time smallint NOT NULL,
@@ -152,8 +152,8 @@ DROP TABLE IF EXISTS order_restaurant CASCADE;
 
 CREATE TABLE order_restaurant (
     order_id integer NOT NULL,
-    customer_id bigserial NOT NULL,
-    restaurant_id bigserial NOT NULL,
+    customer_id bigint NOT NULL,
+    restaurant_id bigint NOT NULL,
     restaurant_review TEXT, --restaurant review can be null, it means that the customer associated with the order did not write a review for the restaurant--
     restaurant_rating rating, --restaurant rating can be null, it means that the customer associated with the order did not submit a rating for the restaurant--
     primary key(order_id, customer_id),
@@ -168,7 +168,7 @@ DROP TABLE IF EXISTS order_has CASCADE;
 
 create table order_has(
     order_id integer NOT NULL,
-    customer_id bigserial NOT NULL,
+    customer_id bigint NOT NULL,
     food_name varchar(256) NOT NULL,
     quantity integer NOT NULL,
     food_review text, --food review can be null, it means that the customer associated with the order did not write a review for the food item--
@@ -184,8 +184,8 @@ DROP TABLE IF EXISTS order_taken CASCADE;
 
 create table order_taken(
     order_id integer NOT NULL,
-    customer_id bigserial NOT NULL,
-    delivery_id bigserial NOT NULL,
+    customer_id bigint NOT NULL,
+    delivery_id bigint DEFAULT NULL,
     delivery_review text, --delivary review can be null, it means that the customer associated with the order did not write a review for the delivery--
     delivery_rating rating, --delivery rating can be null, it means that the customer associated with the order did not submit a rating for the delivery--
     primary key(order_id, customer_id),
