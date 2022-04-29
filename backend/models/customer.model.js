@@ -35,7 +35,7 @@ async function update(customer_id, mobile, email) {
 async function add_address(customer_id, address, latitude, longitude) {
     const insertGen = 'INSERT INTO coordinates (latitude, longitude, gen_address) VALUES ($2,$3,$1) ON CONFLICT (latitude,longitude) DO NOTHING;'
     const insertCustomerAddress = 'INSERT INTO customer_address (customer_id,latitude,longitude) SELECT $1,$2,$3;';
-    const result = await db.transaction([insertGen,insertCustomerAddress],[[address,latitude,longitude],[customer_id,latitude,longitude]]);
+    const result = await db.transaction([insertGen,insertCustomerAddress],[[address,latitude,longitude],[customer_id,latitude,longitude]]).catch(e=>e);
     return {result};
 }
 
@@ -49,25 +49,25 @@ async function update_address(customer_id,old_latitude,old_longitude,address,lat
     const delQuery = 'DELETE FROM customer_address WHERE customer_id=$1 AND latitude=$2 AND longitude=$3;'
     const insertGen = 'INSERT INTO coordinates (latitude, longitude, gen_address) VALUES ($2,$3,$1) ON CONFLICT (latitude,longitude) DO NOTHING;'
     const insertCustomerAddress = 'INSERT INTO customer_address (customer_id,latitude,longitude) SELECT $1,$2,$3;';
-    const result = await db.transaction([delQuery,insertGen,insertCustomerAddress],[[customer_id,old_latitude,old_longitude],[address,latitude,longitude],[customer_id,latitude,longitude]]);
+    const result = await db.transaction([delQuery,insertGen,insertCustomerAddress],[[customer_id,old_latitude,old_longitude],[address,latitude,longitude],[customer_id,latitude,longitude]]).catch(e=>e);
     return {result};
 }
 
-async function restaurant_review(order_id, customer_id, rating, review) {
-    const query = 'UPDATE food_order SET restaurant_review=$4,restaurant_rating=$3 WHERE order_id=$1 AND customer_id=$2;'
-    const result = await db.query(query,[order_id,customer_id,rating,review]);
+async function restaurant_review(order_id, customer_id, restaurant_id, rating, review) {
+    const query = 'UPDATE order_restaurant SET restaurant_review=$4,restaurant_rating=$3 WHERE order_id=$1 AND customer_id=$2 AND restaurant_id=$5;'
+    const result = await db.query(query,[order_id,customer_id,rating,review,restaurant_id]).catch(e=>e);
     return {result}
 }
 
 async function food_review(order_id, customer_id, rating, review, food_name) {
-    const query = 'UPDATE order_has SET food_rating=$3,food_review=$4 WHERE order_id=$1,customer_id=$2,food_name=$5;'
-    const result = await db.query(query,[order_id,customer_id,rating,review,food_name]);
+    const query = 'UPDATE order_has SET food_rating=$3,food_review=$4 WHERE order_id=$1 AND customer_id=$2 AND food_name=$5;'
+    const result = await db.query(query,[order_id,customer_id,rating,review,food_name]).catch(e=>e);
     return {result}
 }
 
 async function delivery_review(order_id, customer_id, rating, review) {
-    const query = 'UPDATE order_taken SET delivery_review=$3,delivery_rating=$3 WHERE order_id=$1,customer_id=$2;'
-    const result = await db.query(query,[order_id,customer_id,rating,review]);
+    const query = 'UPDATE order_taken SET delivery_review=$3,delivery_rating=$3 WHERE order_id=$1 AND customer_id=$2;'
+    const result = await db.query(query,[order_id,customer_id,rating,review]).catch(e=>e);
     return {result}
 }
 

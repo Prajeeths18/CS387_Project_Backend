@@ -50,14 +50,24 @@ describe('Authentication Routes test suite',() => {
         expect(req.user.role === "CUSTOMER")
         expect(req.user.valid === true)
     }),
-    it('[T-1] Login Failure - Wrong Password', async () => {
-        const req = { body: {
+    it('[T-1] Login Failure - Wrong Password/Username', async () => {
+        let req = { body: {
                         "username": "test_user_1",
                         "password": "wrong_dummy_password"
                     } }
         let res = {};
         res.json = (x) => { res.result = x };
         let next = () => {}
+        await authController.login(req,res,next)
+        expect(res.result === null);
+
+        req = { body: {
+                        "username": 1,
+                        "password": "wrong_dummy_password"
+                    } }
+        res = {};
+        res.json = (x) => { res.result = x };
+        next = () => {}
         await authController.login(req,res,next)
         expect(res.result === null);
     })

@@ -23,9 +23,9 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">73.91% </span>
+                <span class="strong">84.31% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>34/46</span>
+                <span class='fraction'>43/51</span>
             </div>
         
             
@@ -37,16 +37,16 @@
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">45.45% </span>
+                <span class="strong">50% </span>
                 <span class="quiet">Functions</span>
-                <span class='fraction'>5/11</span>
+                <span class='fraction'>8/16</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">79.06% </span>
+                <span class="strong">100% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>34/43</span>
+                <span class='fraction'>43/43</span>
             </div>
         
             
@@ -61,7 +61,7 @@
             </div>
         </template>
     </div>
-    <div class='status-line medium'></div>
+    <div class='status-line high'></div>
     <pre><table class="coverage">
 <tr><td class="line-count quiet"><a name='L1'></a><a href='#L1'>1</a>
 <a name='L2'></a><a href='#L2'>2</a>
@@ -199,21 +199,21 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">3x</span>
@@ -260,7 +260,7 @@ async function update(customer_id, mobile, email) {
 async function add_address(customer_id, address, latitude, longitude) {
     const insertGen = 'INSERT INTO coordinates (latitude, longitude, gen_address) VALUES ($2,$3,$1) ON CONFLICT (latitude,longitude) DO NOTHING;'
     const insertCustomerAddress = 'INSERT INTO customer_address (customer_id,latitude,longitude) SELECT $1,$2,$3;';
-    const result = await db.transaction([insertGen,insertCustomerAddress],[[address,latitude,longitude],[customer_id,latitude,longitude]]);
+    const result = await db.transaction([insertGen,insertCustomerAddress],[[address,latitude,longitude],[customer_id,latitude,longitude]]).catch(<span class="fstat-no" title="function not covered" >e=</span>&gt;<span class="cstat-no" title="statement not covered" >e)</span>;
     return {result};
 }
 &nbsp;
@@ -274,26 +274,26 @@ async function update_address(customer_id,old_latitude,old_longitude,address,lat
     const delQuery = 'DELETE FROM customer_address WHERE customer_id=$1 AND latitude=$2 AND longitude=$3;'
     const insertGen = 'INSERT INTO coordinates (latitude, longitude, gen_address) VALUES ($2,$3,$1) ON CONFLICT (latitude,longitude) DO NOTHING;'
     const insertCustomerAddress = 'INSERT INTO customer_address (customer_id,latitude,longitude) SELECT $1,$2,$3;';
-    const result = await db.transaction([delQuery,insertGen,insertCustomerAddress],[[customer_id,old_latitude,old_longitude],[address,latitude,longitude],[customer_id,latitude,longitude]]);
+    const result = await db.transaction([delQuery,insertGen,insertCustomerAddress],[[customer_id,old_latitude,old_longitude],[address,latitude,longitude],[customer_id,latitude,longitude]]).catch(<span class="fstat-no" title="function not covered" >e=</span>&gt;<span class="cstat-no" title="statement not covered" >e)</span>;
     return {result};
 }
 &nbsp;
-async function <span class="fstat-no" title="function not covered" >restaurant_review(</span>order_id, customer_id, rating, review) {
-    const query = <span class="cstat-no" title="statement not covered" >'UPDATE food_order SET restaurant_review=$4,restaurant_rating=$3 WHERE order_id=$1 AND customer_id=$2;'</span>
-    const result = <span class="cstat-no" title="statement not covered" >await db.query(query,[order_id,customer_id,rating,review]);</span>
-<span class="cstat-no" title="statement not covered" >    return {result}</span>
+async function restaurant_review(order_id, customer_id, restaurant_id, rating, review) {
+    const query = 'UPDATE order_restaurant SET restaurant_review=$4,restaurant_rating=$3 WHERE order_id=$1 AND customer_id=$2 AND restaurant_id=$5;'
+    const result = await db.query(query,[order_id,customer_id,rating,review,restaurant_id]).catch(<span class="fstat-no" title="function not covered" >e=</span>&gt;<span class="cstat-no" title="statement not covered" >e)</span>;
+    return {result}
 }
 &nbsp;
-async function <span class="fstat-no" title="function not covered" >food_review(</span>order_id, customer_id, rating, review, food_name) {
-    const query = <span class="cstat-no" title="statement not covered" >'UPDATE order_has SET food_rating=$3,food_review=$4 WHERE order_id=$1,customer_id=$2,food_name=$5;'</span>
-    const result = <span class="cstat-no" title="statement not covered" >await db.query(query,[order_id,customer_id,rating,review,food_name]);</span>
-<span class="cstat-no" title="statement not covered" >    return {result}</span>
+async function food_review(order_id, customer_id, rating, review, food_name) {
+    const query = 'UPDATE order_has SET food_rating=$3,food_review=$4 WHERE order_id=$1 AND customer_id=$2 AND food_name=$5;'
+    const result = await db.query(query,[order_id,customer_id,rating,review,food_name]).catch(<span class="fstat-no" title="function not covered" >e=</span>&gt;<span class="cstat-no" title="statement not covered" >e)</span>;
+    return {result}
 }
 &nbsp;
-async function <span class="fstat-no" title="function not covered" >delivery_review(</span>order_id, customer_id, rating, review) {
-    const query = <span class="cstat-no" title="statement not covered" >'UPDATE order_taken SET delivery_review=$3,delivery_rating=$3 WHERE order_id=$1,customer_id=$2;'</span>
-    const result = <span class="cstat-no" title="statement not covered" >await db.query(query,[order_id,customer_id,rating,review]);</span>
-<span class="cstat-no" title="statement not covered" >    return {result}</span>
+async function delivery_review(order_id, customer_id, rating, review) {
+    const query = 'UPDATE order_taken SET delivery_review=$3,delivery_rating=$3 WHERE order_id=$1 AND customer_id=$2;'
+    const result = await db.query(query,[order_id,customer_id,rating,review]).catch(<span class="fstat-no" title="function not covered" >e=</span>&gt;<span class="cstat-no" title="statement not covered" >e)</span>;
+    return {result}
 }
 &nbsp;
 exports.register = register;
@@ -310,7 +310,7 @@ exports.delivery_review = delivery_review;</pre></td></tr></table></pre>
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at Thu Apr 28 2022 19:04:17 GMT+0530 (India Standard Time)
+                at Thu Apr 28 2022 20:49:16 GMT+0530 (India Standard Time)
             </div>
         <script src="../prettify.js"></script>
         <script>

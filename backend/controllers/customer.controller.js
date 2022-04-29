@@ -1,15 +1,17 @@
 const customerModel = require('../models/customer.model');
 
 async function register(req,res,next){
-    res.json(await customerModel.register(
-        req.body.username,
-        req.body.password,
-        req.body.address, 
-        req.body.latitude, 
-        req.body.longitude, 
-        req.body.mobile, 
-        req.body.email
-        ));
+    res.json(
+        await customerModel.register(
+            req.body.username,
+            req.body.password,
+            req.body.address, 
+            req.body.latitude, 
+            req.body.longitude, 
+            req.body.mobile, 
+            req.body.email
+        )
+    );
     // res.json({});
 }
 
@@ -92,6 +94,7 @@ async function restaurant_review(req,res,next) {
         await customerModel.restaurant_review(
             req.body.order_id,
             req.user.user_id,
+            req.body.restaurant_id,
             req.body.rating,
             req.body.review
         )

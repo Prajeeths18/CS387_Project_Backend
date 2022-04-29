@@ -5,6 +5,7 @@ const router = require('../routes/customer.routes');
 */
 const customerController = require('../controllers/customer.controller');
 const db = require('../db');
+const pgp = require('pg-promise');
 // const bodyParser = require('body-parser');
 /*
 const app = new express();
@@ -22,12 +23,19 @@ app.use(clientErrorHandler);
 */
 
 let user;
+let restaurant_id;
+let delivery_id;
 
 describe('Customer Routes test suite',() => {
     beforeAll(async () => {
-        // await db.query('INSERT INTO gen_user (username,password,role,valid) VALUES ("test_restaurant","useless_password","RESTAURANT",true);');
-        // let restaurant_id = await db.query('SELECT FROM gen_user WHERE username = "test_restaurant";').then(x=>x.rows[0].user_id);
-        // await db.query('INSERT INTO restaurant (restaurant_id,restaurant_name,mobile_no,latitude,longitude) VALUES ();')
+        await db.query("INSERT INTO gen_user (username,password,role,valid) VALUES ('test_restaurant','useless_password','RESTAURANT',true);");
+        restaurant_id = await db.query("SELECT user_id FROM gen_user WHERE username = 'test_restaurant';").then(x=>x.rows[0].user_id);
+        await db.query("INSERT INTO restaurant (restaurant_id,restaurant_name,mobile_no,latitude,longitude) VALUES ($1,'test_restaurant',1234567890,28.53538174,77.19692286);",[restaurant_id]);
+        await db.query("INSERT INTO food_type (food_name,food_type,course_type) VALUES ('test_food','VEG','STARTERS');");
+        await db.query("INSERT INTO food_items (restaurant_id,food_name,available,preparation_time,specific_discount,cost) VALUES ($1,'test_food',true,5,0,150);",[restaurant_id])
+        await db.query("INSERT INTO gen_user (username,password,role,valid) VALUES ('test_delivery','useless_password','DELIVERY',true);");
+        delivery_id = await db.query("SELECT user_id FROM gen_user WHERE username = 'test_delivery';").then(x=>x.rows[0].user_id);
+        await db.query("INSERT INTO delivery (delivery_id,mobile_no,vaccination_status) VALUES ($1,1234567890,'2');",[delivery_id]);
     })
     it('[T-0] Register Success',async () => {
         const trial = await db.query('DELETE FROM gen_user WHERE username = $1', ["test_user_1"]);
@@ -46,6 +54,11 @@ describe('Customer Routes test suite',() => {
         let next = () => {}
         await customerController.register(req,res,next);
         user = await db.query("SELECT user_id,username,role,valid FROM gen_user WHERE username=$1",["test_user_1"]).catch(e=>e).then(x=>x.rows[0]);
+        // console.log(pgp.as.format("INSERT INTO food_order (order_id,customer_id,order_place_time,latitude,longitude) VALUES (1,$1,'2019-03-01 10:00+5:30',28.53538174,77.19692286);",[user.user_id]))
+        await db.query("INSERT INTO food_order (order_id,customer_id,order_place_time,latitude,longitude) VALUES (1,$1,'2019-03-01 10:00+5:30',28.53538174,77.19692286);",[user.user_id])
+        await db.query("INSERT INTO order_restaurant (order_id,customer_id,restaurant_id) VALUES (1,$1,$2);",[user.user_id,restaurant_id]);
+        await db.query("INSERT INTO order_has (order_id, customer_id, food_name, quantity) VALUES (1,$1,'test_food',2);",[user.user_id]);
+        await db.query("INSERT INTO order_taken (order_id,customer_id,delivery_id) VALUES (1,$1,$2);",[user.user_id,delivery_id]);
         // const res = await supertest(app)
                             // .post('/api/customer/register')
                             // .type('json')
@@ -92,14 +105,68 @@ describe('Customer Routes test suite',() => {
         await customerController.update(req,res,next);
         expect(res.status === 500);
         expect(res.result === null);
+        await customerController.add_address(req,res,next);
+        expect(res.status === 500);
+        expect(res.result === null);
+        await customerController.update_address(req,res,next);
+        expect(res.status === 500);
+        expect(res.result === null);
+        await customerController.delete_address(req,res,next);
+        expect(res.status === 500);
+        expect(res.result === null);
+        await customerController.delivery_review(req,res,next);
+        expect(res.status === 500);
+        expect(res.result === null);
+        await customerController.food_review(req,res,next);
+        expect(res.status === 500);
+        expect(res.result === null);
+        await customerController.restaurant_review(req,res,next);
+        expect(res.status === 500);
+        expect(res.result === null);
         req.user = user;
         req.user.role = 'RESTAURANT';
         await customerController.update(req,res,next);
         expect(res.status === 500);
         expect(res.result === null);
+        await customerController.add_address(req,res,next);
+        expect(res.status === 500);
+        expect(res.result === null);
+        await customerController.update_address(req,res,next);
+        expect(res.status === 500);
+        expect(res.result === null);
+        await customerController.delete_address(req,res,next);
+        expect(res.status === 500);
+        expect(res.result === null);
+        await customerController.delivery_review(req,res,next);
+        expect(res.status === 500);
+        expect(res.result === null);
+        await customerController.food_review(req,res,next);
+        expect(res.status === 500);
+        expect(res.result === null);
+        await customerController.restaurant_review(req,res,next);
+        expect(res.status === 500);
+        expect(res.result === null);
         req.user.role = 'CUSTOMER';
         req.user.valid = false;
         await customerController.update(req,res,next);
+        expect(res.status === 500);
+        expect(res.result === null);
+        await customerController.add_address(req,res,next);
+        expect(res.status === 500);
+        expect(res.result === null);
+        await customerController.update_address(req,res,next);
+        expect(res.status === 500);
+        expect(res.result === null);
+        await customerController.delete_address(req,res,next);
+        expect(res.status === 500);
+        expect(res.result === null);
+        await customerController.delivery_review(req,res,next);
+        expect(res.status === 500);
+        expect(res.result === null);
+        await customerController.food_review(req,res,next);
+        expect(res.status === 500);
+        expect(res.result === null);
+        await customerController.restaurant_review(req,res,next);
         expect(res.status === 500);
         expect(res.result === null);
         req.user.valid = true;
@@ -251,8 +318,78 @@ describe('Customer Routes test suite',() => {
         expect(res.result.result[1].rowCount === 0)
         expect(res.result.result[2].rowCount === 1)
     })
+    it('[T-11] Add restaurant review', async () => {
+        let req = {
+            body: {
+                "order_id": 1,
+                "restaurant_id": restaurant_id,
+                "rating": 3,
+                "review": "random nonsense",
+            },
+            user: user
+        }
+        let res = {}
+        res.json = (x) => { res.result = x};
+        res.sendStatus = (x) => {res.status = x};
+        let next = () => {}
+        await customerController.restaurant_review(req,res,next);
+        expect(res.result.rowCount === 1)
+        let temp = await db.query("SELECT restaurant_rating, restaurant_review FROM order_restaurant WHERE order_id=1 AND customer_id=$1 AND restaurant_id=$2",[user.user_id,restaurant_id]);
+        // console.log(temp)
+        expect(temp.rows[0].restaurant_rating === 3)
+        expect(temp.rows[0].restaurant_review === 'random nonsense')
+    })
+    it('[T-11] Add food review', async () => {
+        let req = {
+            body: {
+                "order_id": 1,
+                "rating": 2,
+                "review": "more random nonsense",
+                "food_name": "test_food"
+            },
+            user: user
+        }
+        let res = {}
+        res.json = (x) => { res.result = x};
+        res.sendStatus = (x) => {res.status = x};
+        let next = () => {}
+        await customerController.food_review(req,res,next);
+        expect(res.result.rowCount === 1)
+        let temp = await db.query("SELECT food_rating, food_review FROM order_has WHERE order_id=1 AND customer_id=$1 AND food_name=$2",[user.user_id,"test_food"]);
+        expect(temp.rows[0].food_rating === 2)
+        expect(temp.rows[0].food_review === 'more random nonsense')
+    })
+    it('[T-11] Add delivery review', async () => {
+        let req = {
+            body: {
+                "order_id": 1,
+                "rating": 4,
+                "review": "more more random nonsense",
+                "delivery_id": delivery_id
+            },
+            user: user
+        }
+        let res = {}
+        res.json = (x) => { res.result = x};
+        res.sendStatus = (x) => {res.status = x};
+        let next = () => {}
+        await customerController.delivery_review(req,res,next);
+        expect(res.result.rowCount === 1)
+        let temp = await db.query("SELECT delivery_rating, delivery_review FROM order_taken WHERE order_id=1 AND customer_id=$1 AND delivery_id=$2;",[user.user_id,delivery_id]).catch(e=>e);
+        // console.log(temp)
+        expect(temp.rows[0].delivery_rating === 4)
+        expect(temp.rows[0].delivery_review === 'more more random nonsense')
+    })
     afterAll(async ()=>{
-        const trial = await db.query('DELETE FROM gen_user WHERE username = $1', ["test_user_1"]);
+        await db.query('DELETE FROM gen_user WHERE username = $1', ["test_user_1"]);
+        await db.query("DELETE FROM gen_user WHERE username = 'test_restaurant");
+        await db.query("DELETE FROM gen_user WHERE username = 'test_delivery");
+        await db.query("DELETE FROM food_type WHERE food_name = 'test_food'");
+        await db.query("DELETE FROM food_items WHERE food_name = 'test_food'");
+        await db.query("DELETE FROM food_order WHERE customer_id = $1",[user.user_id]);
+        await db.query("DELETE FROM order_restaurant WHERE customer_id = $1",[user.user_id]);
+        await db.query("DELETE FROM order_has WHERE customer_id = $1",[user.user_id]);
+        await db.query("DELETE FROM order_taken WHERE customer_id = $1",[user.user_id]);
         await db.terminate();
     })
 });

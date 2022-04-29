@@ -99,9 +99,7 @@ CREATE TABLE food_order (
     customer_id bigserial NOT NULL,
     order_place_time timestamp with time zone NOT NULL,
     expected_delivery_time timestamp with time zone, -- null means order was rejected
-    actual_delivery_time timestamp with time zone NOT NULL,
-    restaurant_review TEXT, --restaurant review can be null, it means that the customer associated with the order did not write a review for the restaurant--
-    restaurant_rating rating, --restaurant rating can be null, it means that the customer associated with the order did not submit a rating for the restaurant--
+    actual_delivery_time timestamp with time zone, -- null means yet to deliver
     latitude float NOT NULL,
     longitude float NOT NULL,
     foreign key(customer_id) references customer on delete cascade,
@@ -156,6 +154,8 @@ CREATE TABLE order_restaurant (
     order_id integer NOT NULL,
     customer_id bigserial NOT NULL,
     restaurant_id bigserial NOT NULL,
+    restaurant_review TEXT, --restaurant review can be null, it means that the customer associated with the order did not write a review for the restaurant--
+    restaurant_rating rating, --restaurant rating can be null, it means that the customer associated with the order did not submit a rating for the restaurant--
     primary key(order_id, customer_id),
     foreign key(order_id, customer_id) references food_order on delete no action,
     foreign key(restaurant_id) references restaurant on delete no action
