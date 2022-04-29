@@ -402,6 +402,33 @@ describe('Customer Routes test suite',() => {
         expect(temp.rows[0].delivery_rating).toBe("4")
         expect(temp.rows[0].delivery_review).toBe('more more random nonsense')
     })
+
+    it('[T-12] Get Restaurant List', async () => {
+        let req = {
+            body: {
+                "latitude": 28.53538174,
+                "longitude": 77.19692286,
+            },
+            user:user,
+           
+        }
+        let res = {}
+        res.json = (x) => { res.result = x};
+        res.sendStatus = (x) => {res.status = x};
+        let next = () => {}
+        await customerController.restaurant_list(req,res,next);
+        //console.log(res)
+        expect(res.result.result.rowCount).toBe(67);
+        // res.result.result.rows.filter(e => {
+        //     expect(e.distance).toBe
+        // });
+       //expect(res.result.result.rowCount).toBe(21)
+        //let temp = await db.query("SELECT delivery_rating, delivery_review FROM order_taken WHERE order_id=1 AND customer_id=$1 AND delivery_id=$2;",[user.user_id,delivery_id]).catch(e=>e);
+        // console.log(temp)
+        //expect(temp.rows[0].delivery_rating).toBe("4")
+        //expect(temp.rows[0].delivery_review).toBe('more more random nonsense')
+    })
+
     afterAll(async ()=>{
         await db.query("DELETE FROM food_items WHERE food_name = $1;",['test_food']);
         await db.query("DELETE FROM food_type WHERE food_name = $1;",['test_food']);

@@ -155,6 +155,21 @@ async function delivery_review(req,res,next) {
     );
 }
 
+async function restaurant_list(req,res,next){
+    if((!req.user) || (!req.user.valid)) {
+        return res.sendStatus(500)
+    }
+    if(req.user.role !== 'CUSTOMER') {
+        return res.sendStatus(500)
+    }
+    res.json(
+        await customerModel.restaurant_list(
+            req.body.latitude,
+            req.body.longitude,
+        )
+    );
+}
+
 exports.register = register;
 exports.update = update;
 exports.add_address = add_address;
@@ -164,5 +179,6 @@ exports.restaurant_review = restaurant_review;
 exports.food_review = food_review;
 exports.delivery_review = delivery_review;
 exports.order = order;
+exports.restaurant_list = restaurant_list;
 
 //req.user.user_id //req.user.

@@ -158,8 +158,18 @@ const queryDel = `  DELETE FROM food_items WHERE restaurant_id=$1 AND food_name=
     return {result};
 }
 
+async function food_item_list(restaurant_id){
+    const queryList = ` select * from food_items where restaurant_id = $1 and available = true
+    `
+    const result = await db.query(queryList,[restaurant_id]).catch(e=>e);
+    return {result};
+}
+
+
+
 exports.register = register
 exports.add_item=add_item
 exports.update_details = update_details
 exports.update_food_item = update_food_item
 exports.delete_food_item = delete_food_item
+exports.food_item_list = food_item_list

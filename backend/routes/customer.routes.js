@@ -12,5 +12,6 @@ router.post("/order",auth.authenticateToken,customerController.order);
 router.post("/review/restaurant",auth.authenticateToken,customerController.restaurant_review);
 router.post("/review/food",auth.authenticateToken,customerController.food_review);
 router.post("/review/delivery",auth.authenticateToken,customerController.delivery_review);
+router.post("/restaurant_list",auth.authenticateToken,customerController.restaurant_list);
 
 module.exports = router;

@@ -103,6 +103,40 @@ async function profile(customer_id) {
     return {customerResult,addressResult}
 }
 
+async function restaurant_list(latitude,longitude){
+
+    // const queryPos = ` select * from customer_address where customer_id = $1
+    // `
+    // const positions = await db.query(queryPos,[customer_id]).catch(e=>e);
+    // if(positions.rows.length === 0){
+    //     return positions;
+    // }
+    // latitude = positions.rows[0].latitude
+    // longitude = positions.rows[0].longitude
+    const Query = `with restDist as ( 
+        select R.restaurant_id as restaurant_id,R.restaurant_name as restaurant_name, 
+        ( 6371 * acos( cos( radians($1) ) * cos( radians( R.latitude ) ) 
+        * cos( radians(R.longitude) - radians($2)) + sin(radians($1)) 
+        * sin( radians(R.latitude)))) as distance 
+        FROM restaurant as R 
+     )
+     select * from restDist 
+     where distance <= 15;
+    `
+    const result = await db.query(Query,[latitude,longitude]).catch(e=>e);
+    return {result};
+}
+
+// with restDist as ( 
+//     select R.restaurant_id as restaurant_id,R.restaurant_name as restaurant_name, 
+//     ( 6371 * acos( cos( radians($1) ) * cos( radians( R.latitude ) ) 
+//     * cos( radians(R.longitude) - radians($2)) + sin(radians($1)) 
+//     * sin( radians(R.latitude)))) as distance 
+//     FROM restaurant as R 
+//  )
+//  select * from restDist 
+//  where distance > 15;
+
 exports.register = register;
 exports.update = update;
 exports.add_address = add_address;
@@ -113,3 +147,4 @@ exports.food_review = food_review;
 exports.delivery_review = delivery_review;
 exports.order = order;
 exports.profile = profile;
+exports.restaurant_list = restaurant_list;
