@@ -24,6 +24,7 @@ describe('Restaurant test suite',() => {
                                 
                             } }
         let res = {};
+        res.sendStatus = (x) => {res.status = x};
         res.json = (x) => { res.result = x };
         let next = () => {}
         await restaurantController.register(req,res,next);
@@ -49,6 +50,7 @@ describe('Restaurant test suite',() => {
                 
             } }
     let res = {};
+    res.sendStatus = (x) => {res.status = x};
     res.json = (x) => { res.result = x };
     let next = () => {}
     await restaurantController.register(req,res,next);
@@ -71,6 +73,7 @@ describe('Restaurant test suite',() => {
                                 
                             } }
         let res = {};
+        res.sendStatus = (x) => {res.status = x};
         res.json = (x) => { res.result = x };
         let next = () => {}
         await restaurantController.add_item(req,res,next);
@@ -91,6 +94,7 @@ describe('Restaurant test suite',() => {
                                 
                             } }
         let res = {};
+        res.sendStatus = (x) => {res.status = x};
         res.json = (x) => { res.result = x };
         let next = () => {}
         await restaurantController.add_item(req,res,next);
@@ -114,6 +118,7 @@ describe('Restaurant test suite',() => {
                             user_id: user_id_task
                         } }
         let res = {};
+        res.sendStatus = (x) => {res.status = x};
         res.json = (x) => { res.result = x };
         let next = () => {}
         await restaurantController.update_details(req,res,next);

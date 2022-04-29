@@ -140,13 +140,10 @@ async function delete_food_item(restaurant_id,food_name){
 
 //         DELETE FROM food_items WHERE restaurant_id=$1 AND food_name=$2;
 
-
-
-    const queryDel = `  DELETE FROM food_items WHERE restaurant_id=$1 AND food_name=$2;
+const queryDel = `  DELETE FROM food_items WHERE restaurant_id=$1 AND food_name=$2;
     `
     const result = await db.transaction([queryDel],[[restaurant_id,food_name]]).catch(e>=e);
     return {result};
-
 }
 
 exports.register = register
