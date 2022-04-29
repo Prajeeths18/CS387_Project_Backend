@@ -134,24 +134,17 @@ async function update_food_item(restaurant_id,food_name,preparation_time,cost,av
 
 }
 
-async function delete_food_item(restaurant_id,food_name,order_id,customer_id){
+async function delete_food_item(restaurant_id,food_name){
 
 //         - $1=restaurant_id, $2=food_name
 
 //         DELETE FROM food_items WHERE restaurant_id=$1 AND food_name=$2;
 
-//     - ORDER_ACTION
-//         - Arguments
-//         - order_id=$1,customer_id=$2
 
-//         UPDATE food_order SET expected_delivery_time=0 WHERE order_id=$1,customer_id=$2;
 
     const queryDel = `  DELETE FROM food_items WHERE restaurant_id=$1 AND food_name=$2;
     `
-    
-    const queryUpdate = `  UPDATE food_order SET expected_delivery_time=0 WHERE order_id=$1,customer_id=$2;
-    `
-    const result = await db.transaction([queryDel,queryUpdate],[[restaurant_id,food_name],[order_id,customer_id]]).catch(e>=e);
+    const result = await db.transaction([queryDel],[[restaurant_id,food_name]]).catch(e>=e);
     return {result};
 
 }

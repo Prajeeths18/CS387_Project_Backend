@@ -98,8 +98,6 @@ async function delete_food_item(req,res,next){
         await restaurantModel.delete_food_item(
             req.user.user_id,
             req.body.food_name,
-            req.body.order_id,
-            req.body.customer_id,
         )
     )
 }
