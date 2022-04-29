@@ -9,6 +9,6 @@ router.post("/availability",auth.authenticateToken,deliveryController.availabili
 router.get("/profile",auth.authenticateToken,deliveryController.profile);
 router.get("/orders",auth.authenticateToken,deliveryController.orders);
 router.get("/orders/free",auth.authenticateToken,deliveryController.freeOrders);
-
+router.get("/order/accept",auth.authenticateToken,deliveryController.acceptOrder);
 
 module.exports = router;

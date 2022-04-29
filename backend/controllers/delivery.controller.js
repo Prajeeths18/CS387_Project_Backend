@@ -83,9 +83,26 @@ async function freeOrders(req,res,next) {
     )
 }
 
+async function acceptOrder(req,res,next) {
+    if((!req.user) || (!req.user.valid)) {
+        return res.sendStatus(500)
+    }
+    if(req.user.role !== 'DELIVERY') {
+        return res.sendStatus(500)
+    }
+    res.json(
+        await deliveryModel.freeOrders(
+            req.body.order_id,
+            req.body.customer_id,
+            req.user.user_id
+        )
+    )
+}
+
 exports.register = register
 exports.update = update
 exports.availability = availability
 exports.profile = profile
 exports.orders = orders
 exports.freeOrders = freeOrders
+exports.acceptOrder = acceptOrder
