@@ -1,6 +1,12 @@
 const restaurantModel = require('../models/restaurant.model');
 
 async function register(req,res,next){
+    if((!req.user) || (!req.user.valid)) {
+        return res.sendStatus(500)
+    }
+    if(req.user.role !== 'RESTAURANT') {
+        return res.sendStatus(500)
+    }
     res.json(
         await restaurantModel.register(
         req.body.username,
@@ -21,6 +27,12 @@ async function register(req,res,next){
 }
 
 async function add_item(req,res,next){
+    if((!req.user) || (!req.user.valid)) {
+        return res.sendStatus(500)
+    }
+    if(req.user.role !== 'RESTAURANT') {
+        return res.sendStatus(500)
+    }
     res.json(
         await restaurantModel.add_item(
             req.user.user_id,
@@ -36,6 +48,12 @@ async function add_item(req,res,next){
 }
 
 async function update_details(req,res,next){
+    if((!req.user) || (!req.user.valid)) {
+        return res.sendStatus(500)
+    }
+    if(req.user.role !== 'RESTAURANT') {
+        return res.sendStatus(500)
+    }
     res.json(
         await restaurantModel.update_details(
             req.user.user_id,
@@ -51,9 +69,15 @@ async function update_details(req,res,next){
 }
 
 async function update_food_item(req,res,next){
+    if((!req.user) || (!req.user.valid)) {
+        return res.sendStatus(500)
+    }
+    if(req.user.role !== 'RESTAURANT') {
+        return res.sendStatus(500)
+    }
     res.json(
         await restaurantModel.update_food_item(
-            req.body.restaurant_id,
+            req.user.user_id,
             req.body.food_name,
             req.body.preparation_time,
             req.body.cost,
@@ -64,9 +88,15 @@ async function update_food_item(req,res,next){
 }
 
 async function delete_food_item(req,res,next){
+    if((!req.user) || (!req.user.valid)) {
+        return res.sendStatus(500)
+    }
+    if(req.user.role !== 'RESTAURANT') {
+        return res.sendStatus(500)
+    }
     res.json(
         await restaurantModel.delete_food_item(
-            req.body.restaurant_id,
+            req.user.user_id,
             req.body.food_name,
             req.body.order_id,
             req.body.customer_id,

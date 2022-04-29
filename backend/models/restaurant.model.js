@@ -80,18 +80,28 @@ async function add_item(restaurant_id, name, cost, available, type, course_type,
     return { result };
 }
 
-async function update_details(
-    
-){
+async function update_details(restaurant_id,mobile_no,email,address,overall_discount,max_safety_follow,open_time,close_time)  
+{
 
     const queryRest = ` SELECT * FROM restaurant WHERE restaurant_id=$1;
     `
-
+    const userDefault = await db.query(queryRest,[restaurant_id]).catch(e=>e);
+    if (userDefault.rows.length === 0) {
+        return userDefault;
+    } else {
+        mobile = mobile?mobile:userDefault.rows[0].mobile_no;
+        email = email?email:userDefault.rows[0].email;
+        address = address?address:userDefault.rows[0].address;
+        overall_discount = overall_discount?overall_discount:userDefault.rows[0].overall_discount;
+        max_safety_follow = max_safety_follow?max_safety_follow:userDefault.rows[0].max_safety_follow;
+        open_time = open_time?open_time:userDefault.rows[0].open_time;
+        close_time = close_time?close_time:userDefault.rows[0].close_time;
+    }
     const queryUpdate = ` UPDATE restaurant SET mobile_no=$2,email=$3,address=$4,
     overall_discount=$5,max_safety_follow=$6,open_time=$7,close_time=$8 WHERE restaurant_id=$1;
     `
 
-    const result = await db.transaction([queryRest,queryUpdate],[[restaurant_id],[mobile_no,email,address,overall_discount,max_safety_follow,open_time,close_time]]).catch(e>=e);
+    const result = await db.transaction([queryRest,queryUpdate],[[restaurant_id],[restaurant_id,mobile_no,email,address,overall_discount,max_safety_follow,open_time,close_time]]).catch(e>=e);
     return {result};
 
 }
@@ -100,7 +110,15 @@ async function update_food_item(restaurant_id,food_name,preparation_time,cost,av
     
     const queryFood = ` SELECT * FROM food_items,food_type WHERE food_items.food_name=food_type.food_name AND food_items.food_name=$2 AND food_items.restaurant_id=$1;
     `
-
+    const userDefault = await db.query(queryFood,[restaurant_id,food_name]).catch(e=>e);
+    if (userDefault.rows.length === 0) {
+        return userDefault;
+    } else {
+        preparation_time = preparation_time?preparation_time:userDefault.rows[0].preparation_time;
+        cost = cost?cost:userDefault.rows[0].cost;
+        available = available?available:userDefault.rows[0].available;
+        specific_discount = specific_discount?specific_discount:userDefault.rows[0].specific_discount;     
+    }
     const queryUpdate = ` UPDATE food_items SET preparation_time=$3,cost=$4,available=$5,specific_discount=$6 WHERE restaurant_id=$1 AND food_name=$2;
     `
 
@@ -130,7 +148,7 @@ async function delete_food_item(restaurant_id,food_name,order_id,customer_id){
 
     const queryDel = `  DELETE FROM food_items WHERE restaurant_id=$1 AND food_name=$2;
     `
-
+    
     const queryUpdate = `  UPDATE food_order SET expected_delivery_time=0 WHERE order_id=$1,customer_id=$2;
     `
     const result = await db.transaction([queryDel,queryUpdate],[[restaurant_id,food_name],[order_id,customer_id]]).catch(e>=e);
