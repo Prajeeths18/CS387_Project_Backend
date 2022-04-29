@@ -80,28 +80,39 @@ async function add_item(restaurant_id, name, cost, available, type, course_type,
     return { result };
 }
 
-async function update_details(restaurant_id,mobile_no,email,address,overall_discount,max_safety_follow,open_time,close_time)  
+async function update_details(restaurant_id,mobile_no,email,address,latitude,longitude,overall_discount,max_safety_follow,open_time,close_time)  
 {
 
     const queryRest = ` SELECT * FROM restaurant WHERE restaurant_id=$1;
     `
     const userDefault = await db.query(queryRest,[restaurant_id]).catch(e=>e);
+    if(address===null || address===undefined){
+        console.log("hello gius")
+        if((latitude!==undefined && latitude!==null) || (longitude!==undefined && longitude!==null) ){
+            console.log("what the fck")
+            return ;
+        }
+    }
     if (userDefault.rows.length === 0) {
         return userDefault;
     } else {
-        mobile = mobile?mobile:userDefault.rows[0].mobile_no;
+        mobile_no = mobile_no?mobile_no:userDefault.rows[0].mobile_no;
         email = email?email:userDefault.rows[0].email;
-        address = address?address:userDefault.rows[0].address;
+        latitude = latitude?latitude:userDefault.rows[0].latitude;
+        longitude = longitude?longitude:userDefault.rows[0].longitude;
         overall_discount = overall_discount?overall_discount:userDefault.rows[0].overall_discount;
         max_safety_follow = max_safety_follow?max_safety_follow:userDefault.rows[0].max_safety_follow;
         open_time = open_time?open_time:userDefault.rows[0].open_time;
         close_time = close_time?close_time:userDefault.rows[0].close_time;
     }
-    const queryUpdate = ` UPDATE restaurant SET mobile_no=$2,email=$3,address=$4,
+    const queryUpdate1 = ` UPDATE restaurant SET mobile_no=$2,email=$3,latitude=$4,longitude=$9,
     overall_discount=$5,max_safety_follow=$6,open_time=$7,close_time=$8 WHERE restaurant_id=$1;
     `
 
-    const result = await db.transaction([queryRest,queryUpdate],[[restaurant_id],[restaurant_id,mobile_no,email,address,overall_discount,max_safety_follow,open_time,close_time]]).catch(e>=e);
+    const queryUpdate2 = `INSERT INTO coordinates (latitude, longitude, gen_address) VALUES
+     ($1,$2,$3) ON CONFLICT (latitude,longitude) DO NOTHING  `
+
+    const result = await db.transaction([queryRest,queryUpdate1,queryUpdate2],[[restaurant_id],[restaurant_id,mobile_no,email,latitude,overall_discount,max_safety_follow,open_time,close_time,longitude],[latitude,longitude,address]]).catch(e=>e);
     return {result};
 
 }
@@ -122,7 +133,7 @@ async function update_food_item(restaurant_id,food_name,preparation_time,cost,av
     const queryUpdate = ` UPDATE food_items SET preparation_time=$3,cost=$4,available=$5,specific_discount=$6 WHERE restaurant_id=$1 AND food_name=$2;
     `
 
-    const result = await db.transaction([queryFood,queryUpdate],[[restaurant_id,food_name],[restaurant_id,food_name,preparation_time,cost,available,specific_discount]]).catch(e>=e);
+    const result = await db.transaction([queryFood,queryUpdate],[[restaurant_id,food_name],[restaurant_id,food_name,preparation_time,cost,available,specific_discount]]).catch(e=>e);
     return {result};
     
     //         QUERY 1: SELECT * FROM food_items,food_type WHERE food_items.food_name=food_type.food_name AND food_items.food_name=$2 AND food_items.restaurant_id=$1;
@@ -142,7 +153,7 @@ async function delete_food_item(restaurant_id,food_name){
 
 const queryDel = `  DELETE FROM food_items WHERE restaurant_id=$1 AND food_name=$2;
     `
-    const result = await db.transaction([queryDel],[[restaurant_id,food_name]]).catch(e>=e);
+    const result = await db.transaction([queryDel],[[restaurant_id,food_name]]).catch(e=>e);
     return {result};
 }
 

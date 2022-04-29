@@ -1,12 +1,6 @@
 const restaurantModel = require('../models/restaurant.model');
 
 async function register(req,res,next){
-    if((!req.user) || (!req.user.valid)) {
-        return res.sendStatus(500)
-    }
-    if(req.user.role !== 'RESTAURANT') {
-        return res.sendStatus(500)
-    }
     res.json(
         await restaurantModel.register(
         req.body.username,
