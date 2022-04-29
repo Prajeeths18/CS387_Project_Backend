@@ -162,10 +162,54 @@ del restaurant_data
 
 mobiles.close() # All usage of mobile numbers complete
 
+coord_file = open("random_sources/houses.txt","r")
+number_of_addresses = np.random.choice(range(1,len(NUMBER_OF_CUSTOMER_ADDRESSES)+1),size=np.size(customer_id_list),p=NUMBER_OF_CUSTOMER_ADDRESSES)
+
+address_data = [",".join([f"({customer_id_list[i]+1},"+",".join(coord_file.readline()[:-1].split(",")[:2])+")" for j in range(number_of_addresses[i])]) for i in range(np.size(customer_id_list))]
+del number_of_addresses
+coord_file.close()
+
+AVG_NUM_ADDRESS = sum([x*y for x,y in zip(range(1,len(NUMBER_OF_CUSTOMER_ADDRESSES)+1),NUMBER_OF_CUSTOMER_ADDRESSES)])
+
+assert (NUMBER_OF_CUSTOMERS*AVG_NUM_ADDRESS<=9700),"Insufficient house records to simulate"
+
+for page in _paginate(address_data,page_size=int(100/AVG_NUM_ADDRESS)):
+    sql.write("INSERT INTO customer_address (customer_id,latitude,longitude) VALUES "+",".join(page)+";\n")
+
+address_data.clear()
+del address_data
+
+no_of_favourites = np.size(customer_id_list)*NUMBER_OF_FAVOURITES
+restaurant_favourites = np.random.choice(restaurant_id_list,size=no_of_favourites)
+favourite_data = [",".join([f"({customer_id_list[i]+1},{j+1})" for j in restaurant_favourites[NUMBER_OF_FAVOURITES*i:NUMBER_OF_FAVOURITES*(i+1)]]) for i in range(np.size(customer_id_list))]
+
+for page in _paginate(favourite_data,page_size=100):
+    sql.write("INSERT INTO favorites (customer_id,restaurant_id) VALUES "+",".join(page)+";\n")
+
+food_file = open("random_sources/indian_food.csv")
+next(food_file)
+foods = list(csv.reader(food_file))
+vegtypes = random.choices(['VEG','NON-VEG'],k=len(foods))
+courses = random.choices(['STARTERS','DESSERT','SNACKS','MAIN_COURSE'],weights=[0.1,0.2,0.3,0.4],k=len(foods))
+food_data_part = [f"('{foods[i][0]}','{vegtypes[i]}','{courses[i]}')" for i in range(len(foods))]
+food_data_full = [[foods[i][0],int(foods[i][3])+int(foods[i][4])] for i in range(len(foods))]
+
+for page in _paginate(food_data_part,page_size=100):
+    sql.write("INSERT INTO food_type (food_name,food_type,course_type) VALUES"+",".join(page)+";\n")
+
+NUMBER_OF_FOOD_PER_REST = 15
+
+restaurant_foods = np.random.choice(len(foods),size=NUMBER_OF_RESTAURANTS*NUMBER_OF_FOOD_PER_REST,replace=True)
+food_item_data = sum([[f"({restaurant_id_list[i]},'{food_data_full[j][0]}',true,{food_data_full[j][1]},0,{random.randint(100,200)})" for j in restaurant_foods[i*NUMBER_OF_FOOD_PER_REST:(i+1)*NUMBER_OF_FOOD_PER_REST]] for i in range(len(restaurant_id_list))],[])
+    #sum([f"({restaurant_id_list[i]},'{j[0]}',true,{j[1]},0,{random.randint(100,200)})"  
+
+for page in _paginate(food_item_data,page_size=100):
+    sql.write("INSERT INTO food_items (restaurant_id,food_name,available,preparation_time,specific_discount,cost) VALUES"+",".join(page)+";\n")
+
 ORDER_CUSTOMER_MAX = 20
 ORDER_CUSTOMER_MIN = 2
 REST_START = 10
-REST_END = 21
+REST_END = 20
 ORDER_YR = 2022
 MIN_OFFSET = 20*60
 MAX_OFFSET = 70*60
@@ -190,16 +234,15 @@ def add_time(hr,minu,sec,max_offset,min_offset):
 
 for i in range(np.size(customer_id_list)):
     cust_id = customer_id_list[i]
-    no_of_order = random.randint(ORDER_CUSTOMER_MIN,ORDER_CUSTOMER_MAX+1)
+    no_of_order = random.randint(ORDER_CUSTOMER_MIN,ORDER_CUSTOMER_MAX)
     for j in range(no_of_order):
-
-        m,hr,minute,sec = random.randint(1,13),random.randint(REST_START,REST_END),random.randint(0,60),random.randint(0,60)
-        day = random.randint(1,29)
+        m,hr,minute,sec = random.randint(1,12),random.randint(REST_START,REST_END),random.randint(0,59),random.randint(0,59)
+        day = random.randint(1,28)
         if m in [1,3,5,7,8,10,12]:
-            day = random.randint(1,32)
-        elif m in [4,6,9,11]:
             day = random.randint(1,31)
-
+        elif m in [4,6,9,11]:
+            day = random.randint(1,30)
+        
         place_time = f'{ORDER_YR}-{m}-{day} {hr}:{minute}:{sec} +5:30'
         #print("place time is:",place_time)
         added_time = add_time(hr,minute,sec,MAX_OFFSET,MIN_OFFSET)
@@ -211,35 +254,8 @@ for i in range(np.size(customer_id_list)):
 
         actual_time = f'{ORDER_YR}-{m}-{day} {temp[0]}:{temp[1]}:{temp[2]} +5:30'
 
-        
-
-
-
-coord_file = open("random_sources/houses.txt","r")
-number_of_addresses = np.random.choice(range(1,len(NUMBER_OF_CUSTOMER_ADDRESSES)+1),size=np.size(customer_id_list),p=NUMBER_OF_CUSTOMER_ADDRESSES)
-
-address_data = [",".join([f"({customer_id_list[i]+1},"+",".join(coord_file.readline()[:-1].split(",")[:2])+")" for j in range(number_of_addresses[i])]) for i in range(np.size(customer_id_list))]
-del number_of_addresses
-coord_file.close()
-
-AVG_NUM_ADDRESS = sum([x*y for x,y in zip(range(1,len(NUMBER_OF_CUSTOMER_ADDRESSES)+1),NUMBER_OF_CUSTOMER_ADDRESSES)])
-
-assert (NUMBER_OF_CUSTOMERS*AVG_NUM_ADDRESS<=9700),"Insufficient house records to simulate"
-
-for page in _paginate(address_data,page_size=int(100/AVG_NUM_ADDRESS)):
-    sql.write("INSERT INTO customer_address (customer_id,latitude,longitude) VALUES "+",".join(page)+";\n")
-
-address_data.clear()
-del address_data
-"""
-no_of_favourites = np.size(customer_id_list)*NUMBER_OF_FAVOURITES
-restaurant_favourites = np.random.choice(restaurant_id_list,size=no_of_favourites)
-favourite_data = [",".join([f"({customer_id_list[i]+1},{j+1})" for j in restaurant_favourites[NUMBER_OF_FAVOURITES*i:NUMBER_OF_FAVOURITES*(i+1)]]) for i in range(np.size(customer_id_list))]
-
-for page in _paginate(favourite_data,page_size=100):
-    sql.write("INSERT INTO favorites (customer_id,restaurant_id) VALUES "+",".join(page)+";\n")
-"""
 del customer_id_list
 del delivery_id_list
 del restaurant_id_list
+
 sql.close()
