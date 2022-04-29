@@ -106,7 +106,7 @@ async function food_item_list(req,res,next){
         return res.sendStatus(500)
     }
     res.json(
-        await restaurantModel.delete_food_item(
+        await restaurantModel.food_item_list(
             req.user.user_id,
         )
     )
