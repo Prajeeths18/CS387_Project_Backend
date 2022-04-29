@@ -36,6 +36,13 @@ async function availability(delivery_id,available){
     return {result};
 }
 
+async function profile(delivery_id) {
+    const query = 'SELECT mobile_no,email,vaccination_status FROM delivery WHERE delivery_id=$1;'
+    const result = await db.query(query,[delivery_id]);
+    return { result }
+}
+
 exports.register = register
 exports.update = update
 exports.availability = availability
+exports.profile = profile

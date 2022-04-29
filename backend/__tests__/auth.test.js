@@ -43,13 +43,13 @@ describe('Authentication Routes test suite',() => {
                             //     "email": "test_user_1@test.com"
                             // })
                             // .set('Accept','application/json');
-        expect(res.result !== null);
+        expect(res.result).not.toBe(undefined);
         res.sendStatus = (x) => {res.status = x};
         req.headers = {"authorization": `Bearer ${res.result}`}
         auth.authenticateToken(req,res,next);
-        expect(req.user.username === "test_user_1")
-        expect(req.user.role === "CUSTOMER")
-        expect(req.user.valid === true)
+        expect(req.user.username).toBe("test_user_1")
+        expect(req.user.role).toBe("CUSTOMER")
+        expect(req.user.valid).toBe(true)
     }),
     it('[T-1] Login Failure - Wrong Password/Username', async () => {
         let req = { body: {
@@ -60,7 +60,7 @@ describe('Authentication Routes test suite',() => {
         res.json = (x) => { res.result = x };
         let next = () => {}
         await authController.login(req,res,next)
-        expect(res.result === null);
+        expect(res.result).toBe(null);
 
         req = { body: {
                         "username": 1,
@@ -70,7 +70,7 @@ describe('Authentication Routes test suite',() => {
         res.json = (x) => { res.result = x };
         next = () => {}
         await authController.login(req,res,next)
-        expect(res.result === null);
+        expect(res.result).toBe(null);
     })
     it('[T-2] Auth Error - No token', async () => {
         let req = {}
@@ -80,8 +80,8 @@ describe('Authentication Routes test suite',() => {
         res.sendStatus = (x) => {res.status = x};
         let next = () => {}
         auth.authenticateToken(req,res,next);
-        expect(res.status === 401)
-        expect(req.user === null)
+        expect(res.status).toBe(401)
+        expect(req.user).toBe(undefined)
     })
     it('[T-3] Auth Error - Bad token', async () => {
         let req = {}
@@ -91,8 +91,8 @@ describe('Authentication Routes test suite',() => {
         res.sendStatus = (x) => {res.status = x};
         let next = () => {}
         auth.authenticateToken(req,res,next);
-        expect(res.status === 403)
-        expect(req.user === null)
+        expect(res.status).toBe(403)
+        expect(req.user).toBe(undefined)
     })
     afterAll(async ()=>{
         const trial = await db.query('DELETE FROM gen_user WHERE username = $1', ["test_user_1"]);
