@@ -36,7 +36,7 @@ async function availability(req,res,next) {
     res.json(
         await deliveryModel.availability(
             req.user.user_id,
-            req.user.available,
+            req.body.available,
         )
     );
 }

@@ -1,18 +1,16 @@
 const db = require('../db');
-// const pgp = require('pg-promise');
+const pgp = require('pg-promise');
 const bcrypt = require('bcrypt');
 
 async function register(username, password, vaccination_status, mobile, email) {
     const query = `
-    BEGIN;
     WITH usid AS (
         INSERT INTO gen_user (username,password,role) VALUES ($1,$2,'DELIVERY') RETURNING user_id
     )
-    INSERT INTO delivery (delivery_id,mobile_no,email,vaccination_status) SELECT (user_id,$3,$4,$5) FROM usid;
-    COMMIT;
+    INSERT INTO delivery (delivery_id,mobile_no,email,vaccination_status) SELECT user_id,$3,$4,$5 FROM usid;
     `
-    // console.log(pgp.as.format(query,[username,await bcrypt.hash(password,10),address,latitude,longitude,mobile,email]));
-    const result = await db.query(query,[username,await bcrypt.hash(password,10),vaccination_status,mobile,email]).catch(e=>e);
+    // console.log(pgp.as.format(query,[username,await bcrypt.hash(password,10),mobile,email,vaccination_status]));
+    const result = await db.query(query,[username,await bcrypt.hash(password,10),mobile,email,vaccination_status]).catch(e=>e);
     return { result };
 }
 
@@ -34,7 +32,7 @@ async function availability(delivery_id,available){
 
     const query = ` UPDATE delivery SET available=$2 WHERE delivery_id=$1;
     `
-    const result = await db.query(query,[delivery_id,available]).catch(e>=e);
+    const result = await db.query(query,[delivery_id,available]).catch(e=>e);
     return {result};
 }
 
