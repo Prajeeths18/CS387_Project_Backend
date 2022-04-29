@@ -129,7 +129,7 @@ async function orders(req,res,next) {
         return res.sendStatus(500)
     }
     res.json(
-        await restaurantModel.profile(
+        await restaurantModel.orders(
             req.user.user_id
         )
     )

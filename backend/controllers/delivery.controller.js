@@ -63,7 +63,21 @@ async function orders(req,res,next) {
         return res.sendStatus(500)
     }
     res.json(
-        await deliveryModel.profile(
+        await deliveryModel.orders(
+            req.user.user_id
+        )
+    )
+}
+
+async function freeOrders(req,res,next) {
+    if((!req.user) || (!req.user.valid)) {
+        return res.sendStatus(500)
+    }
+    if(req.user.role !== 'DELIVERY') {
+        return res.sendStatus(500)
+    }
+    res.json(
+        await deliveryModel.freeOrders(
             req.user.user_id
         )
     )
@@ -74,3 +88,4 @@ exports.update = update
 exports.availability = availability
 exports.profile = profile
 exports.orders = orders
+exports.freeOrders = freeOrders

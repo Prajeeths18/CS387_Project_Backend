@@ -192,7 +192,7 @@ async function orders(req,res,next) {
         return res.sendStatus(500)
     }
     res.json(
-        await customerModel.profile(
+        await customerModel.orders(
             req.user.user_id
         )
     )

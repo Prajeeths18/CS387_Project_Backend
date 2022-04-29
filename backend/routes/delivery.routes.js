@@ -8,5 +8,7 @@ router.post("/update",auth.authenticateToken,deliveryController.update);
 router.post("/availability",auth.authenticateToken,deliveryController.availability)
 router.get("/profile",auth.authenticateToken,deliveryController.profile);
 router.get("/orders",auth.authenticateToken,deliveryController.orders);
+router.get("/orders/free",auth.authenticateToken,deliveryController.freeOrders);
+
 
 module.exports = router;
