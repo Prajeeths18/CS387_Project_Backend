@@ -9,9 +9,13 @@ async function register(username, password, vaccination_status, mobile, email) {
     )
     INSERT INTO delivery (delivery_id,mobile_no,email,vaccination_status) SELECT user_id,$3,$4,$5 FROM usid;
     `
+    if(password) {
     // console.log(pgp.as.format(query,[username,await bcrypt.hash(password,10),mobile,email,vaccination_status]));
-    const result = await db.query(query,[username,await bcrypt.hash(password,10),mobile,email,vaccination_status]).catch(e=>e);
-    return { result };
+        const result = await db.query(query,[username,await bcrypt.hash(password,10),mobile,email,vaccination_status]).catch(e=>e);
+        return { result };
+    } else {
+        console.log(username,password,vaccination_status,mobile,email)
+    }
 }
 
 async function update(delivery_id, mobile, email) {
