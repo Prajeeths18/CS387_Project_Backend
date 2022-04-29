@@ -8,7 +8,7 @@ describe('Authentication Routes test suite',() => {
         db.init()
         const req = { body: {
                         "username": "test_user_1",
-                        "password": "dummy_password",
+                        "password": "cHGXxi",
                         "address": "84, Near Honda Showroom, Adchini, New Delhi",
                         "latitude": 28.53538174,
                         "longitude": 77.19692286,
@@ -23,7 +23,7 @@ describe('Authentication Routes test suite',() => {
     it('[T-0] Login Success',async () => {
         let req = { body: {
                                 "username": "test_user_1",
-                                "password": "dummy_password"
+                                "password": "cHGXxi"
                             } }
         let res = {};
         res.json = (x) => { res.result = x };
@@ -44,6 +44,7 @@ describe('Authentication Routes test suite',() => {
                             // })
                             // .set('Accept','application/json');
         expect(res.result).not.toBe(undefined);
+        // console.log(res.result)
         res.sendStatus = (x) => {res.status = x};
         req.headers = {"authorization": `Bearer ${res.result}`}
         auth.authenticateToken(req,res,next);

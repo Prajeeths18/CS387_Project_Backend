@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<coverage generated="1651237804123" clover="3.2.0">
-  <project timestamp="1651237804123" name="All files">
-    <metrics statements="324" coveredstatements="318" conditionals="178" coveredconditionals="156" methods="89" coveredmethods="64" elements="591" coveredelements="538" complexity="0" loc="324" ncloc="324" packages="3" files="10" classes="10"/>
+<coverage generated="1651238839712" clover="3.2.0">
+  <project timestamp="1651238839712" name="All files">
+    <metrics statements="325" coveredstatements="319" conditionals="178" coveredconditionals="156" methods="89" coveredmethods="64" elements="592" coveredelements="539" complexity="0" loc="325" ncloc="325" packages="3" files="10" classes="10"/>
     <package name="controllers">
       <metrics statements="122" coveredstatements="119" conditionals="108" coveredconditionals="105" methods="23" coveredmethods="23"/>
       <file name="auth.controller.js" path="/home/girish/iitb2021/spring/CS387/CS387_Project_Backend/backend/controllers/auth.controller.js">
@@ -170,7 +170,7 @@
       </file>
     </package>
     <package name="models">
-      <metrics statements="178" coveredstatements="176" conditionals="66" coveredconditionals="49" methods="61" coveredmethods="36"/>
+      <metrics statements="179" coveredstatements="177" conditionals="66" coveredconditionals="49" methods="61" coveredmethods="36"/>
       <file name="auth.js" path="/home/girish/iitb2021/spring/CS387/CS387_Project_Backend/backend/models/auth.js">
         <metrics statements="12" coveredstatements="12" conditionals="6" coveredconditionals="6" methods="3" coveredmethods="3"/>
         <line num="1" count="1" type="stmt"/>
@@ -347,7 +347,7 @@
         <line num="180" count="1" type="stmt"/>
       </file>
       <file name="user.auth.js" path="/home/girish/iitb2021/spring/CS387/CS387_Project_Backend/backend/models/user.auth.js">
-        <metrics statements="15" coveredstatements="14" conditionals="8" coveredconditionals="7" methods="3" coveredmethods="2"/>
+        <metrics statements="16" coveredstatements="15" conditionals="8" coveredconditionals="7" methods="3" coveredmethods="2"/>
         <line num="1" count="1" type="stmt"/>
         <line num="2" count="1" type="stmt"/>
         <line num="3" count="1" type="stmt"/>
@@ -359,10 +359,11 @@
         <line num="14" count="3" type="cond" truecount="2" falsecount="0"/>
         <line num="15" count="1" type="stmt"/>
         <line num="18" count="2" type="stmt"/>
-        <line num="19" count="2" type="cond" truecount="2" falsecount="0"/>
-        <line num="20" count="1" type="stmt"/>
-        <line num="22" count="1" type="stmt"/>
-        <line num="26" count="1" type="stmt"/>
+        <line num="19" count="2" type="stmt"/>
+        <line num="20" count="2" type="cond" truecount="2" falsecount="0"/>
+        <line num="21" count="1" type="stmt"/>
+        <line num="23" count="1" type="stmt"/>
+        <line num="27" count="1" type="stmt"/>
       </file>
     </package>
   </project>

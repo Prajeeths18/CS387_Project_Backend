@@ -6,10 +6,8 @@ coordinates = 14807
 customer_address = 8996
 
 
-Restaurant - Food Items
 Restaurant - List of Orders
 Delivery - List of Orders
-COMMON - Profile
 
 
 # list of food items for a restaurant

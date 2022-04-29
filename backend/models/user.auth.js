@@ -15,6 +15,7 @@ async function login(username, password) {
             return null
         }
     }
+    // console.log(user.password)
     const isCorrect = await bcrypt.compare(password,user.password);
     if (isCorrect) {
         return auth.getToken(user.user_id,user.username,user.role,user.valid);
