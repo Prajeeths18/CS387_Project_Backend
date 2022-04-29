@@ -253,6 +253,8 @@ for i in range(np.size(customer_id_list)):
         temp = split_time(secs+random.randint(NEG_DISTORT,POS_DISTORT))
 
         actual_time = f'{ORDER_YR}-{m}-{day} {temp[0]}:{temp[1]}:{temp[2]} +5:30'
+        restaurant_id = random.choice(restaurant_id_list)
+        delivery_id = random.choice(delivery_id_list)
 
 del customer_id_list
 del delivery_id_list
