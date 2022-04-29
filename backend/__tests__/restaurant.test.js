@@ -2,6 +2,15 @@ const restaurantController = require('../controllers/restaurant.controller');
 const db = require('../db');
 var assert = require('assert');
 var user;
+
+const authFuncs = [
+    restaurantController.add_item,
+    restaurantController.update_details,
+    restaurantController.update_food_item,
+    restaurantController.delete_food_item,
+    restaurantController.profile,
+]
+
 describe('Restaurant test suite',() => {
     beforeAll(async () => {
         db.init()
@@ -153,7 +162,26 @@ describe('Restaurant test suite',() => {
         //expect(res.result.result.severity).toBe("ERROR");
         expect(temp).toBe(undefined)
     })
-
+    it('[T-9] Profile test',async ()=>{
+        let req = {
+            user:user
+        }
+        let res = {}
+        res.json = (x) => { res.result = x};
+        res.sendStatus = (x) => {res.status = x};
+        let next = () => {}
+        await restaurantController.profile(req,res,next);
+        // console.log(res.result)
+        expect(res.result.result.length).toBe(1)
+        expect(res.result.result[0].mobile_no).toBe(9999999999)
+        expect(res.result.result[0].email).toBe('test_user_1@test.com')
+        expect(res.result.result[0].restaurant_name).toBe('test_user_2')
+        expect(res.result.result[0].max_safety_follow).toBe(false)
+        expect(res.result.result[0].overall_discount).toBe(0)
+        expect(res.result.result[0].open_time).toBe('09:30:00+05:30')
+        expect(res.result.result[0].close_time).toBe('14:30:00+05:30')
+        expect(res.result.result[0].avg_cost_for_two).toBe(1232)
+    })
     it('[T-5] Update Details - Failure', async () => {
         const req = { body: {
                                 "username": "test_user_2",
@@ -244,6 +272,9 @@ describe('Restaurant test suite',() => {
     it('[T-11] Get List of Food items',async()=>{
 
         const req = { 
+            body:{
+                restaurant_id: user.user_id
+            },
             user: user
         }
 
@@ -253,8 +284,8 @@ describe('Restaurant test suite',() => {
         let next = () => {}
         await restaurantController.food_item_list(req,res,next);
         //console.log(res)
-        expect(res.result.result.rowCount).toBe(1);
-        expect(res.result.result.rows[0].food_name).toBe('kadaipoori')
+        expect(res.result.result.length).toBe(1);
+        expect(res.result.result[0].food_name).toBe('kadaipoori')
         
         //temp = await db.query("SELECT * FROM food_type WHERE food_name=$1",["kadaipoori"]).catch(e=>e).then(x=>x.rows[0]);
         //expect(res.result.result[0].rowCount).toBe(1)
@@ -292,18 +323,11 @@ describe('Restaurant test suite',() => {
         res.json = (x) => { res.result = x};
         res.sendStatus = (x) => {res.status = x};
         let next = () => {}
-        await restaurantController.update_details(req,res,next);
-        expect(res.status).toBe(500);
-        expect(res.result).toBe(undefined);
-        await restaurantController.add_item(req,res,next);
-        expect(res.status).toBe(500);
-        expect(res.result).toBe(undefined);
-        await restaurantController.update_food_item(req,res,next);
-        expect(res.status).toBe(500);
-        expect(res.result).toBe(undefined);
-        await restaurantController.delete_food_item(req,res,next);
-        expect(res.status).toBe(500);
-        expect(res.result).toBe(undefined);
+        await Promise.all(authFuncs.map(async (f)=> {
+            await f(req,res,next);
+            expect(res.status).toBe(500)
+            expect(res.result).toBe(undefined)
+        }))
         req.user = user;
         req.user.role = 'CUSTOMER';
         await restaurantController.update_details(req,res,next);

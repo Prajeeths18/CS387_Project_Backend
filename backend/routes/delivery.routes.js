@@ -6,5 +6,6 @@ const auth = require("../models/auth")
 router.post("/register",deliveryController.register);
 router.post("/update",auth.authenticateToken,deliveryController.update);
 router.post("/availability",auth.authenticateToken,deliveryController.availability)
+router.get("/profile",auth.authenticateToken,deliveryController.profile);
 
 module.exports = router;

@@ -53,7 +53,7 @@ describe('Delivery Routes test suite',() => {
     it('[T-1] Register failure - Duplicate username', async () => {
         const req = { body: {
                         "username": "test_user_3",
-                        "password": "dummy_password",
+                        "password": "dummy password",
                         "vaccination_status": '2',
                         "mobile": 9999999999,
                         "email": "test_user_1@test.com"
@@ -64,6 +64,8 @@ describe('Delivery Routes test suite',() => {
         await deliveryController.register(req,res,next)
         expect(res.result.result.severity).toBe("ERROR");
         expect(res.result.result.detail).toBe('Key (username)=(test_user_3) already exists.');
+        req.body.password = undefined
+        await deliveryController.register(req,res,next);
     })
     it('[T-2] Update - Invalid auth', async () => {
         let req = {
@@ -212,6 +214,21 @@ describe('Delivery Routes test suite',() => {
         await deliveryController.availability(req,res,next);
         // console.log(res)
         expect(res.result.result.rowCount).toBe(1)
+    })
+    it('[T-9] Profile test',async ()=>{
+        let req = {
+            user:user
+        }
+        let res = {}
+        res.json = (x) => { res.result = x};
+        res.sendStatus = (x) => {res.status = x};
+        let next = () => {}
+        await deliveryController.profile(req,res,next);
+        // console.log(res.result)
+        expect(res.result.result.length).toBe(1)
+        expect(res.result.result[0].mobile_no).toBe(9990999999)
+        expect(res.result.result[0].email).toBe('new_stupid@stupid.com')
+        expect(res.result.result[0].vaccination_status).toBe('2')
     })
     afterAll(async ()=>{
         await db.query('DELETE FROM gen_user WHERE username = $1;', ["test_user_3"]);

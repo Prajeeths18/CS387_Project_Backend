@@ -63,7 +63,7 @@ describe('Authentication Routes test suite',() => {
         expect(res.result).toBe(null);
 
         req = { body: {
-                        "username": 1,
+                        "username": "useless",
                         "password": "wrong_dummy_password"
                     } }
         res = {};

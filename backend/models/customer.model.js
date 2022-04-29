@@ -69,7 +69,7 @@ async function order(customer_id, restaurant_id, timestamp, latitude, longitude,
         return {order_id};
       } catch (e) {
         await client.query('ROLLBACK')
-        throw e
+        return e
       } finally {
         client.release()
       }
@@ -95,10 +95,10 @@ async function delivery_review(order_id, customer_id, rating, review) {
 
 async function profile(customer_id) {
     const customerQuery = 'SELECT mobile_no,email,subscription FROM customer WHERE customer_id=$1;'
-    const addressQuery = 'SELECT address FROM coordinates INNER JOIN customer_address WHERE customer_address.customer_id=$1;'
+    const addressQuery = 'SELECT gen_address FROM coordinates NATURAL INNER JOIN customer_address WHERE customer_address.customer_id=$1;'
     const [customerResult, addressResult] = await Promise.all([
-        db.pool.query(customerQuery,[customer_id]).catch(e=>e),
-        db.pool.query(addressQuery,[customer_id]).catch(e=>e)
+        db.pool.query(customerQuery,[customer_id]).catch(e=>e).then(x=>x.rows),
+        db.pool.query(addressQuery,[customer_id]).catch(e=>e).then(x=>x.rows)
     ])
     return {customerResult,addressResult}
 }
@@ -123,7 +123,7 @@ async function restaurant_list(latitude,longitude){
      select * from restDist 
      where distance <= 15;
     `
-    const result = await db.query(Query,[latitude,longitude]).catch(e=>e);
+    const result = await db.query(Query,[latitude,longitude]).catch(e=>e).then(x=>x.rows);
     return {result};
 }
 

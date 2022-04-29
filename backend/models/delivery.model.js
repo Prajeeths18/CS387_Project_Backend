@@ -14,7 +14,7 @@ async function register(username, password, vaccination_status, mobile, email) {
         const result = await db.query(query,[username,await bcrypt.hash(password,10),mobile,email,vaccination_status]).catch(e=>e);
         return { result };
     } else {
-        console.log(username,password,vaccination_status,mobile,email)
+        // console.log(username,password,vaccination_status,mobile,email)
     }
 }
 
@@ -42,7 +42,7 @@ async function availability(delivery_id,available){
 
 async function profile(delivery_id) {
     const query = 'SELECT mobile_no,email,vaccination_status FROM delivery WHERE delivery_id=$1;'
-    const result = await db.query(query,[delivery_id]);
+    const result = await db.query(query,[delivery_id]).catch(e=>e).then(x=>x.rows);
     return { result }
 }
 

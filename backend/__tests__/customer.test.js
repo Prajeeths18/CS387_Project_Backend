@@ -22,6 +22,19 @@ function clientErrorHandler (err, req, res, next) {
 app.use(clientErrorHandler);
 */
 
+const authFuncs = [
+    customerController.profile,
+    customerController.add_address,
+    customerController.delete_address,
+    customerController.update_address,
+    customerController.update,
+    customerController.order,
+    customerController.restaurant_list,
+    customerController.restaurant_review,
+    customerController.food_review,
+    customerController.delivery_review
+]
+
 let user;
 let restaurant_id;
 let delivery_id;
@@ -104,73 +117,25 @@ describe('Customer Routes test suite',() => {
         res.json = (x) => { res.result = x};
         res.sendStatus = (x) => {res.status = x};
         let next = () => {}
-        await customerController.update(req,res,next);
-        expect(res.status).toBe(500);
-        expect(res.result).toBe(undefined);
-        await customerController.add_address(req,res,next);
-        expect(res.status).toBe(500);
-        expect(res.result).toBe(undefined);
-        await customerController.update_address(req,res,next);
-        expect(res.status).toBe(500);
-        expect(res.result).toBe(undefined);
-        await customerController.delete_address(req,res,next);
-        expect(res.status).toBe(500);
-        expect(res.result).toBe(undefined);
-        await customerController.delivery_review(req,res,next);
-        expect(res.status).toBe(500);
-        expect(res.result).toBe(undefined);
-        await customerController.food_review(req,res,next);
-        expect(res.status).toBe(500);
-        expect(res.result).toBe(undefined);
-        await customerController.restaurant_review(req,res,next);
-        expect(res.status).toBe(500);
-        expect(res.result).toBe(undefined);
+        await Promise.all(authFuncs.map(async (f)=> {
+            await f(req,res,next);
+            expect(res.status).toBe(500)
+            expect(res.result).toBe(undefined)
+        }))
         req.user = user;
         req.user.role = 'RESTAURANT';
-        await customerController.update(req,res,next);
-        expect(res.status).toBe(500);
-        expect(res.result).toBe(undefined);
-        await customerController.add_address(req,res,next);
-        expect(res.status).toBe(500);
-        expect(res.result).toBe(undefined);
-        await customerController.update_address(req,res,next);
-        expect(res.status).toBe(500);
-        expect(res.result).toBe(undefined);
-        await customerController.delete_address(req,res,next);
-        expect(res.status).toBe(500);
-        expect(res.result).toBe(undefined);
-        await customerController.delivery_review(req,res,next);
-        expect(res.status).toBe(500);
-        expect(res.result).toBe(undefined);
-        await customerController.food_review(req,res,next);
-        expect(res.status).toBe(500);
-        expect(res.result).toBe(undefined);
-        await customerController.restaurant_review(req,res,next);
-        expect(res.status).toBe(500);
-        expect(res.result).toBe(undefined);
+        await Promise.all(authFuncs.map(async (f)=> {
+            await f(req,res,next);
+            expect(res.status).toBe(500)
+            expect(res.result).toBe(undefined)
+        }))
         req.user.role = 'CUSTOMER';
         req.user.valid = false;
-        await customerController.update(req,res,next);
-        expect(res.status).toBe(500);
-        expect(res.result).toBe(undefined);
-        await customerController.add_address(req,res,next);
-        expect(res.status).toBe(500);
-        expect(res.result).toBe(undefined);
-        await customerController.update_address(req,res,next);
-        expect(res.status).toBe(500);
-        expect(res.result).toBe(undefined);
-        await customerController.delete_address(req,res,next);
-        expect(res.status).toBe(500);
-        expect(res.result).toBe(undefined);
-        await customerController.delivery_review(req,res,next);
-        expect(res.status).toBe(500);
-        expect(res.result).toBe(undefined);
-        await customerController.food_review(req,res,next);
-        expect(res.status).toBe(500);
-        expect(res.result).toBe(undefined);
-        await customerController.restaurant_review(req,res,next);
-        expect(res.status).toBe(500);
-        expect(res.result).toBe(undefined);
+        await Promise.all(authFuncs.map(async (f)=> {
+            await f(req,res,next);
+            expect(res.status).toBe(500)
+            expect(res.result).toBe(undefined)
+        }))
         req.user.valid = true;
     })
     it('[T-3] Update - Full Success',async () => {
@@ -269,6 +234,23 @@ describe('Customer Routes test suite',() => {
         expect(res.result.rowCount).toBe(0)
         user.user_id = user_id;
     }) 
+    it('[T-13] Profile test',async ()=>{
+        let req = {
+            user:user
+        }
+        let res = {}
+        res.json = (x) => { res.result = x};
+        res.sendStatus = (x) => {res.status = x};
+        let next = () => {}
+        await customerController.profile(req,res,next);
+        // console.log(res.result.customerResult,res.result.addressResult)
+        expect(res.result.customerResult.length).toBe(1)
+        expect(res.result.customerResult[0].mobile_no).toBe(9990999999)
+        expect(res.result.customerResult[0].email).toBe('new_stupid@stupid.com')
+        expect(res.result.customerResult[0].subscription).toBe(false)
+        expect(res.result.addressResult.length).toBe(1)
+        expect(res.result.addressResult[0].gen_address).toBe('84, Near Honda Showroom, Adchini, New Delhi')
+    })
     it('[T-8] Delete address Success', async () => {
         let req = {
             body: {
@@ -338,6 +320,9 @@ describe('Customer Routes test suite',() => {
         await customerController.order(req,res,next);
         expect(res.result.order_id).toBe(1)
         await db.query('UPDATE order_taken SET delivery_id=$1 WHERE customer_id=$2',[delivery_id,user.user_id])
+        req.body.restaurant_id = 1;
+        await customerController.order(req,res,next);
+        expect(res.result.severity).toBe('ERROR')
     })
     it('[T-11] Add restaurant review', async () => {
         let req = {
@@ -418,7 +403,7 @@ describe('Customer Routes test suite',() => {
         let next = () => {}
         await customerController.restaurant_list(req,res,next);
         //console.log(res)
-        expect(res.result.result.rowCount).toBe(63);
+        expect(res.result.result.length).toBe(63);
         // res.result.result.rows.filter(e => {
         //     expect(e.distance).toBe
         // });
@@ -428,7 +413,6 @@ describe('Customer Routes test suite',() => {
         //expect(temp.rows[0].delivery_rating).toBe("4")
         //expect(temp.rows[0].delivery_review).toBe('more more random nonsense')
     })
-
     afterAll(async ()=>{
         await db.query("DELETE FROM food_items WHERE food_name = $1;",['test_food']);
         await db.query("DELETE FROM food_type WHERE food_name = $1;",['test_food']);

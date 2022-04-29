@@ -99,6 +99,15 @@ async function delete_food_item(req,res,next){
 }
 
 async function food_item_list(req,res,next){
+    res.json(
+        await restaurantModel.food_item_list(
+            req.body.restaurant_id,
+        )
+    )
+
+}
+
+async function profile(req,res,next){
     if((!req.user) || (!req.user.valid)) {
         return res.sendStatus(500)
     }
@@ -106,11 +115,10 @@ async function food_item_list(req,res,next){
         return res.sendStatus(500)
     }
     res.json(
-        await restaurantModel.food_item_list(
-            req.user.user_id,
+        await restaurantModel.profile(
+            req.user.user_id
         )
     )
-
 }
 
 exports.register = register;
@@ -119,3 +127,4 @@ exports.update_details = update_details;
 exports.update_food_item = update_food_item;
 exports.delete_food_item = delete_food_item;
 exports.food_item_list = food_item_list;
+exports.profile = profile
