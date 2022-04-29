@@ -23,9 +23,9 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">87.5% </span>
+                <span class="strong">86.2% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>49/56</span>
+                <span class='fraction'>50/58</span>
             </div>
         
             
@@ -39,14 +39,14 @@
             <div class='fl pad1y space-right2'>
                 <span class="strong">50% </span>
                 <span class="quiet">Functions</span>
-                <span class='fraction'>6/12</span>
+                <span class='fraction'>7/14</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">97.95% </span>
+                <span class="strong">98% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>48/49</span>
+                <span class='fraction'>49/50</span>
             </div>
         
             
@@ -227,7 +227,17 @@
 <a name='L162'></a><a href='#L162'>162</a>
 <a name='L163'></a><a href='#L163'>163</a>
 <a name='L164'></a><a href='#L164'>164</a>
-<a name='L165'></a><a href='#L165'>165</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">1x</span>
+<a name='L165'></a><a href='#L165'>165</a>
+<a name='L166'></a><a href='#L166'>166</a>
+<a name='L167'></a><a href='#L167'>167</a>
+<a name='L168'></a><a href='#L168'>168</a>
+<a name='L169'></a><a href='#L169'>169</a>
+<a name='L170'></a><a href='#L170'>170</a>
+<a name='L171'></a><a href='#L171'>171</a>
+<a name='L172'></a><a href='#L172'>172</a>
+<a name='L173'></a><a href='#L173'>173</a>
+<a name='L174'></a><a href='#L174'>174</a>
+<a name='L175'></a><a href='#L175'>175</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -316,10 +326,10 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">3x</span>
 <span class="cline-any cline-yes">3x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -387,6 +397,16 @@
 <span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
@@ -480,10 +500,10 @@ async function update_details(restaurant_id,mobile_no,email,address,latitude,lon
     `
     const userDefault = await db.query(queryRest,[restaurant_id]).catch(<span class="fstat-no" title="function not covered" >e=</span>&gt;<span class="cstat-no" title="statement not covered" >e)</span>;
     if(address===null || address===undefined){
-        console.log("hello gius")
-        console.log(latitude,longitude)
+        //console.log("hello gius")
+        //console.log(latitude,longitude)
         <span class="missing-if-branch" title="else path not taken" >E</span>if((latitude!==undefined &amp;&amp; latitude!==null) || (<span class="branch-2 cbranch-no" title="branch not covered" >longitude!==undefined </span>&amp;&amp; <span class="branch-3 cbranch-no" title="branch not covered" >longitude!==null)</span> ){
-            console.log("what the fck")
+            //console.log("what the fck")
             return ;
         }
     }
@@ -551,18 +571,28 @@ const queryDel = `  DELETE FROM food_items WHERE restaurant_id=$1 AND food_name=
     return {result};
 }
 &nbsp;
+async function food_item_list(restaurant_id){
+    const queryList = ` select * from food_items where restaurant_id = $1 and available = true
+    `
+    const result = await db.query(queryList,[restaurant_id]).catch(<span class="fstat-no" title="function not covered" >e=</span>&gt;<span class="cstat-no" title="statement not covered" >e)</span>;
+    return {result};
+}
+&nbsp;
+&nbsp;
+&nbsp;
 exports.register = register
 exports.add_item=add_item
 exports.update_details = update_details
 exports.update_food_item = update_food_item
-exports.delete_food_item = delete_food_item</pre></td></tr></table></pre>
+exports.delete_food_item = delete_food_item
+exports.food_item_list = food_item_list</pre></td></tr></table></pre>
 
                 <div class='push'></div><!-- for sticky footer -->
             </div><!-- /wrapper -->
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at Fri Apr 29 2022 13:44:31 GMT+0530 (India Standard Time)
+                at Fri Apr 29 2022 15:53:26 GMT+0530 (India Standard Time)
             </div>
         <script src="../prettify.js"></script>
         <script>

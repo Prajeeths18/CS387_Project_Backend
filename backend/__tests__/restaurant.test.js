@@ -171,7 +171,7 @@ describe('Restaurant test suite',() => {
         res.json = (x) => { res.result = x };
         let next = () => {}
         await restaurantController.update_details(req,res,next);
-        console.log(res)
+        //console.log(res)
         //console.log(res.result.result)
         //temp = await db.query("SELECT user_id,username,role,valid FROM gen_user WHERE username=$1",["test_user_3"]).catch(e=>e).then(x=>x.rows[0]);
         //expect(res.result.result.severity).toBe("ERROR");
@@ -241,7 +241,24 @@ describe('Restaurant test suite',() => {
         //console.log(res)
         expect(temp.food_name).toBe("kadaipoori")
     })
+    it('[T-11] Get List of Food items',async()=>{
 
+        const req = { 
+            user: user
+        }
+
+        let res = {};
+        res.sendStatus = (x) => {res.status = x};
+        res.json = (x) => { res.result = x };
+        let next = () => {}
+        await restaurantController.food_item_list(req,res,next);
+        //console.log(res)
+        expect(res.result.result.rowCount).toBe(1);
+        expect(res.result.result.rows[0].food_name).toBe('kadaipoori')
+        
+        //temp = await db.query("SELECT * FROM food_type WHERE food_name=$1",["kadaipoori"]).catch(e=>e).then(x=>x.rows[0]);
+        //expect(res.result.result[0].rowCount).toBe(1)
+    })
     it('[T-9] Delete FoodItem - Success', async () => {
         const req = { body: {
                                 "food_name": "kadaipoori",
@@ -258,8 +275,6 @@ describe('Restaurant test suite',() => {
         expect(res.result.result[0].rowCount).toBe(1)
        
     })
-
-    
 
     it('[T-10] Update - Invalid auth', async () => {
         let req = {
@@ -310,6 +325,8 @@ describe('Restaurant test suite',() => {
         expect(res.result).toBe(undefined);
         req.user.valid = true;
     })
+
+    
 
     afterAll(async () => {
         await db.query('DELETE FROM food_items WHERE food_name = $1', ["kadaipoori"]);
