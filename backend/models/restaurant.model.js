@@ -1,4 +1,6 @@
 const db = require('../db');
+const pgp = require('pg-promise');
+const bcrypt = require('bcrypt');
 // - REGISTER 
 //         - Arguments 
 //         - $1=username, $2=password 
