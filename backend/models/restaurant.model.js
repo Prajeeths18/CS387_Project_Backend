@@ -1,4 +1,6 @@
 const db = require('../db');
+const pgp = require('pg-promise');
+const bcrypt = require('bcrypt');
 // - REGISTER 
 //         - Arguments 
 //         - $1=username, $2=password 
@@ -63,7 +65,7 @@ async function register(username, password, address, latitude, longitude, mobile
     )
     INSERT INTO restaurant (restaurant_id,restaurant_name,mobile_no,email,overall_discount,max_safety_follow,open_time,close_time,avg_cost_for_two,latitude,longitude) SELECT user_id,$1,$6,$7,$8,$9,$10,$11,$12,$4,$5 FROM usid; 
     `
-    const result = await db.query(query,[username,password,address,latitude,longitude,mobile,email,overall_discount,max_safety_follow,open_time,close_time,avg_cost_for_two]).catch(e=>e);
+    const result = await db.query(query,[username,await bcrypt.hash(password,10),address,latitude,longitude,mobile,email,overall_discount,max_safety_follow,open_time,close_time,avg_cost_for_two]).catch(e=>e);
     return { result };
 }
 
