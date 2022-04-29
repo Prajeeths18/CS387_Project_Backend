@@ -11,6 +11,9 @@ async function login(username, password) {
         return null;
     } else {
         user = user.rows[0];
+        if (!user) {
+            return null
+        }
     }
     const isCorrect = await bcrypt.compare(password,user.password);
     if (isCorrect) {

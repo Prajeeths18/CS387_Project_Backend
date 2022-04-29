@@ -181,7 +181,7 @@ del address_data
 
 no_of_favourites = np.size(customer_id_list)*NUMBER_OF_FAVOURITES
 restaurant_favourites = np.random.choice(restaurant_id_list,size=no_of_favourites)
-favourite_data = [",".join([f"({customer_id_list[i]+1},{j+1})" for j in restaurant_favourites[NUMBER_OF_FAVOURITES*i:NUMBER_OF_FAVOURITES*(i+1)]]) for i in range(np.size(customer_id_list))]
+favourite_data = [",".join([f"({customer_id_list[i]+1},{j+1})" for j in np.unique(restaurant_favourites[NUMBER_OF_FAVOURITES*i:NUMBER_OF_FAVOURITES*(i+1)])]) for i in range(np.size(customer_id_list))]
 
 for page in _paginate(favourite_data,page_size=100):
     sql.write("INSERT INTO favorites (customer_id,restaurant_id) VALUES "+",".join(page)+";\n")
@@ -189,7 +189,7 @@ for page in _paginate(favourite_data,page_size=100):
 food_file = open("random_sources/indian_food.csv")
 next(food_file)
 foods = list(csv.reader(food_file))
-vegtypes = random.choices(['VEG','NON-VEG'],k=len(foods))
+vegtypes = random.choices(['VEG','NON_VEG'],k=len(foods))
 courses = random.choices(['STARTERS','DESSERT','SNACKS','MAIN_COURSE'],weights=[0.1,0.2,0.3,0.4],k=len(foods))
 food_data_part = [f"('{foods[i][0]}','{vegtypes[i]}','{courses[i]}')" for i in range(len(foods))]
 food_data_full = [[foods[i][0],int(foods[i][3])+int(foods[i][4])] for i in range(len(foods))]
@@ -200,7 +200,7 @@ for page in _paginate(food_data_part,page_size=100):
 NUMBER_OF_FOOD_PER_REST = 15
 
 restaurant_foods = np.random.choice(len(foods),size=NUMBER_OF_RESTAURANTS*NUMBER_OF_FOOD_PER_REST,replace=True)
-food_item_data = sum([[f"({restaurant_id_list[i]},'{food_data_full[j][0]}',true,{food_data_full[j][1]},0,{random.randint(100,200)})" for j in restaurant_foods[i*NUMBER_OF_FOOD_PER_REST:(i+1)*NUMBER_OF_FOOD_PER_REST]] for i in range(len(restaurant_id_list))],[])
+food_item_data = sum([[f"({restaurant_id_list[i]+1},'{food_data_full[j][0]}',true,{food_data_full[j][1]},0,{random.randint(100,200)})" for j in np.unique(restaurant_foods[i*NUMBER_OF_FOOD_PER_REST:(i+1)*NUMBER_OF_FOOD_PER_REST])] for i in range(len(restaurant_id_list))],[])
     #sum([f"({restaurant_id_list[i]},'{j[0]}',true,{j[1]},0,{random.randint(100,200)})"  
 
 for page in _paginate(food_item_data,page_size=100):
@@ -215,7 +215,10 @@ MIN_OFFSET = 20*60
 MAX_OFFSET = 70*60
 NEG_DISTORT = -10*60
 POS_DISTORT = 20*60
-customer_data = [] 
+food_order = []
+order_restaurant = []
+order_has = []
+order_taken = []
 
 def split_time(off_set):
     #print("secs:",off_set)
@@ -232,8 +235,23 @@ def add_time(hr,minu,sec,max_offset,min_offset):
     #print(z,type(z),z.hour)
     return (z.hour,z.minute,z.second)
 
+review_mapper = {
+    0: "Very Disgusting",
+    1: "Moderately Disgusting",
+    2: "I can survive",
+    3: "Willing to pay",
+    4: "Good service",
+    5: "Astounding"
+}
+
+coord_file = open("random_sources/houses.txt","r")
+coords = coord_file.readlines()
+coord_file.close()
+coords = coords*int((20*np.size(customer_id_list))/len(coords))
+coords = iter(coords)
+
 for i in range(np.size(customer_id_list)):
-    cust_id = customer_id_list[i]
+    cust_id = customer_id_list[i]+1
     no_of_order = random.randint(ORDER_CUSTOMER_MIN,ORDER_CUSTOMER_MAX)
     for j in range(no_of_order):
         m,hr,minute,sec = random.randint(1,12),random.randint(REST_START,REST_END),random.randint(0,59),random.randint(0,59)
@@ -253,8 +271,30 @@ for i in range(np.size(customer_id_list)):
         temp = split_time(secs+random.randint(NEG_DISTORT,POS_DISTORT))
 
         actual_time = f'{ORDER_YR}-{m}-{day} {temp[0]}:{temp[1]}:{temp[2]} +5:30'
-        restaurant_id = random.choice(restaurant_id_list)
-        delivery_id = random.choice(delivery_id_list)
+        restaurant_id = random.randint(0,len(restaurant_id_list)-1)
+        delivery_id = random.choice(delivery_id_list)+1
+        order_items = list(zip(*np.unique(np.random.choice(np.unique(restaurant_foods[(restaurant_id)*NUMBER_OF_FOOD_PER_REST:(restaurant_id+1)*NUMBER_OF_FOOD_PER_REST]),size=random.randint(2,10),replace=True),return_counts=True)))
+
+        food_rating = np.random.randint(0,6,size=len(order_items))
+        restaurant_rating = random.randint(0,5)
+        delivery_rating = random.randint(0,5)
+
+        order_taken.append(f"({j+1},{cust_id},{delivery_id},'{review_mapper[delivery_rating]}','{delivery_rating}')")
+        order_restaurant.append(f"({j+1},{cust_id},{restaurant_id_list[restaurant_id]+1},'{review_mapper[restaurant_rating]}','{restaurant_rating}')")
+        food_order.append(f"({j+1},{cust_id},'{place_time}','{exp_time}','{actual_time}',"+",".join(next(coords)[:-1].split(",")[:2])+")")
+        order_has.extend([f"({j+1},{cust_id},'{foods[order_item[0]][0]}',{order_item[1]},'{food_rating[i]}','{review_mapper[food_rating[i]]}')" for i,order_item in enumerate(order_items)])
+
+for page in _paginate(food_order,page_size=100):
+    sql.write("INSERT INTO food_order (order_id,customer_id,order_place_time,expected_delivery_time,actual_delivery_time,latitude,longitude) VALUES "+",".join(page)+";\n")
+
+for page in _paginate(order_restaurant,page_size=100):
+    sql.write("INSERT INTO order_restaurant (order_id,customer_id,restaurant_id,restaurant_review,restaurant_rating) VALUES "+",".join(page)+";\n")
+
+for page in _paginate(order_has,page_size=100):
+    sql.write("INSERT INTO order_has (order_id,customer_id,food_name,quantity,food_rating,food_review) VALUES "+",".join(page)+";\n")
+
+for page in _paginate(order_taken,page_size=100):
+    sql.write("INSERT INTO order_taken (order_id,customer_id,delivery_id,delivery_review,delivery_rating) VALUES "+",".join(page)+";\n")
 
 del customer_id_list
 del delivery_id_list

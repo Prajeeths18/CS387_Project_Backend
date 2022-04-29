@@ -418,7 +418,7 @@ describe('Customer Routes test suite',() => {
         let next = () => {}
         await customerController.restaurant_list(req,res,next);
         //console.log(res)
-        expect(res.result.result.rowCount).toBe(67);
+        expect(res.result.result.rowCount).toBe(63);
         // res.result.result.rows.filter(e => {
         //     expect(e.distance).toBe
         // });
