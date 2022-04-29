@@ -88,6 +88,7 @@ async function update_details(restaurant_id,mobile_no,email,address,latitude,lon
     const userDefault = await db.query(queryRest,[restaurant_id]).catch(e=>e);
     if(address===null || address===undefined){
         console.log("hello gius")
+        console.log(latitude,longitude)
         if((latitude!==undefined && latitude!==null) || (longitude!==undefined && longitude!==null) ){
             console.log("what the fck")
             return ;

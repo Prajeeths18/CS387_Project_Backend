@@ -54,6 +54,8 @@ async function update_details(req,res,next){
             req.body.mobile_no,
             req.body.email,
             req.body.address,
+            req.body.latitude,
+            req.body.longitude,
             req.body.overall_discount,
             req.body.max_safety_follow,
             req.body.open_time,

@@ -23,9 +23,9 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">85.45% </span>
+                <span class="strong">87.5% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>47/55</span>
+                <span class='fraction'>49/56</span>
             </div>
         
             
@@ -37,16 +37,16 @@
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">58.33% </span>
+                <span class="strong">50% </span>
                 <span class="quiet">Functions</span>
-                <span class='fraction'>7/12</span>
+                <span class='fraction'>6/12</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">93.75% </span>
+                <span class="strong">97.95% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>45/48</span>
+                <span class='fraction'>48/49</span>
             </div>
         
             
@@ -226,7 +226,8 @@
 <a name='L161'></a><a href='#L161'>161</a>
 <a name='L162'></a><a href='#L162'>162</a>
 <a name='L163'></a><a href='#L163'>163</a>
-<a name='L164'></a><a href='#L164'>164</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">1x</span>
+<a name='L164'></a><a href='#L164'>164</a>
+<a name='L165'></a><a href='#L165'>165</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -317,31 +318,32 @@
 <span class="cline-any cline-yes">3x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">3x</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">3x</span>
-<span class="cline-any cline-yes">3x</span>
-<span class="cline-any cline-yes">3x</span>
-<span class="cline-any cline-yes">3x</span>
-<span class="cline-any cline-yes">3x</span>
-<span class="cline-any cline-yes">3x</span>
-<span class="cline-any cline-yes">3x</span>
-<span class="cline-any cline-yes">3x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">3x</span>
+<span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">3x</span>
+<span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">3x</span>
-<span class="cline-any cline-yes">3x</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -479,9 +481,10 @@ async function update_details(restaurant_id,mobile_no,email,address,latitude,lon
     const userDefault = await db.query(queryRest,[restaurant_id]).catch(<span class="fstat-no" title="function not covered" >e=</span>&gt;<span class="cstat-no" title="statement not covered" >e)</span>;
     if(address===null || address===undefined){
         console.log("hello gius")
-        <span class="missing-if-branch" title="if path not taken" >I</span>if((latitude!==undefined &amp;&amp; <span class="branch-1 cbranch-no" title="branch not covered" >latitude!==null)</span> || (longitude!==undefined &amp;&amp; <span class="branch-3 cbranch-no" title="branch not covered" >longitude!==null)</span> ){
-<span class="cstat-no" title="statement not covered" >            console.log("what the fck")</span>
-<span class="cstat-no" title="statement not covered" >            return ;</span>
+        console.log(latitude,longitude)
+        <span class="missing-if-branch" title="else path not taken" >E</span>if((latitude!==undefined &amp;&amp; latitude!==null) || (<span class="branch-2 cbranch-no" title="branch not covered" >longitude!==undefined </span>&amp;&amp; <span class="branch-3 cbranch-no" title="branch not covered" >longitude!==null)</span> ){
+            console.log("what the fck")
+            return ;
         }
     }
     <span class="missing-if-branch" title="if path not taken" >I</span>if (userDefault.rows.length === 0) {
@@ -489,8 +492,8 @@ async function update_details(restaurant_id,mobile_no,email,address,latitude,lon
     } else {
         mobile_no = mobile_no?<span class="branch-0 cbranch-no" title="branch not covered" >mobile_no:</span>userDefault.rows[0].mobile_no;
         email = email?email:<span class="branch-1 cbranch-no" title="branch not covered" >userDefault.rows[0].email;</span>
-        latitude = latitude?<span class="branch-0 cbranch-no" title="branch not covered" >latitude:</span>userDefault.rows[0].latitude;
-        longitude = longitude?<span class="branch-0 cbranch-no" title="branch not covered" >longitude:</span>userDefault.rows[0].longitude;
+        latitude = latitude?latitude:<span class="branch-1 cbranch-no" title="branch not covered" >userDefault.rows[0].latitude;</span>
+        longitude = longitude?longitude:<span class="branch-1 cbranch-no" title="branch not covered" >userDefault.rows[0].longitude;</span>
         overall_discount = overall_discount?<span class="branch-0 cbranch-no" title="branch not covered" >overall_discount:</span>userDefault.rows[0].overall_discount;
         max_safety_follow = max_safety_follow?<span class="branch-0 cbranch-no" title="branch not covered" >max_safety_follow:</span>userDefault.rows[0].max_safety_follow;
         open_time = open_time?<span class="branch-0 cbranch-no" title="branch not covered" >open_time:</span>userDefault.rows[0].open_time;
@@ -503,7 +506,7 @@ async function update_details(restaurant_id,mobile_no,email,address,latitude,lon
     const queryUpdate2 = `INSERT INTO coordinates (latitude, longitude, gen_address) VALUES
      ($1,$2,$3) ON CONFLICT (latitude,longitude) DO NOTHING  `
 &nbsp;
-    const result = await db.transaction([queryRest,queryUpdate1,queryUpdate2],[[restaurant_id],[restaurant_id,mobile_no,email,latitude,overall_discount,max_safety_follow,open_time,close_time,longitude],[latitude,longitude,address]]).catch(e=&gt;e);
+    const result = await db.transaction([queryRest,queryUpdate1,queryUpdate2],[[restaurant_id],[restaurant_id,mobile_no,email,latitude,overall_discount,max_safety_follow,open_time,close_time,longitude],[latitude,longitude,address]]).catch(<span class="fstat-no" title="function not covered" >e=</span>&gt;<span class="cstat-no" title="statement not covered" >e)</span>;
     return {result};
 &nbsp;
 }
@@ -559,11 +562,7 @@ exports.delete_food_item = delete_food_item</pre></td></tr></table></pre>
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-<<<<<<< HEAD
-                at Fri Apr 29 2022 13:40:09 GMT+0530 (India Standard Time)
-=======
-                at Fri Apr 29 2022 12:41:57 GMT+0530 (India Standard Time)
->>>>>>> 71c4aa909058d998192e11746c14896a65f0bbf6
+                at Fri Apr 29 2022 13:44:31 GMT+0530 (India Standard Time)
             </div>
         <script src="../prettify.js"></script>
         <script>
