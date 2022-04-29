@@ -42,12 +42,14 @@ async function add_item(req,res,next){
 }
 
 async function update_details(req,res,next){
+    console.log("in", req);
     if((!req.user) || (!req.user.valid)) {
         return res.sendStatus(500)
     }
     if(req.user.role !== 'RESTAURANT') {
         return res.sendStatus(500)
     }
+    console.log(req.body.mobile_no);
     res.json(
         await restaurantModel.update_details(
             req.user.user_id,

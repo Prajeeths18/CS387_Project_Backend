@@ -6,6 +6,7 @@ function generateAccessToken(user_id, username, role, valid) {
 }
 
 function authenticateToken(req, res, next) {
+  console.log("auth", req);
   const authHeader = req.headers['authorization']
   let token = authHeader && authHeader.split(' ')[1]
   // token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoxLCJyb2xlIjoiQ1VTVE9NRVIiLCJpYXQiOjE2NTExMzAyMDIsImV4cCI6MTY1MTEzMjAwMn0.SZhdpLqEHGaZg-mD3C8e7qUXB_ig8_RavO6xuLvTmNM"

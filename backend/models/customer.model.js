@@ -53,6 +53,15 @@ async function update_address(customer_id,old_latitude,old_longitude,address,lat
     return {result};
 }
 
+async function get_addresses(user_id) {
+    const query = `
+        SELECT A.latitude, A.longitude, gen_address FROM customer_address A, coordinates B 
+        WHERE customer_id = $1 and A.latitude = B.latitude and A.longitude = B.longitude
+    `;
+    const res = await db.query(query, [user_id]);
+    return {res};
+}
+
 async function order(customer_id, restaurant_id, timestamp, latitude, longitude, food_pairs) {
     let order_id;
     const foodOrderQuery = 'INSERT INTO food_order (order_id,customer_id,order_place_time,latitude,longitude) SELECT COALESCE(MAX(order_id)+1,1),$1,$2,$3,$4 FROM food_order WHERE customer_id=$1 RETURNING order_id;'
@@ -158,3 +167,4 @@ exports.order = order;
 exports.profile = profile;
 exports.restaurant_list = restaurant_list;
 exports.orders = orders
+exports.get_addresses = get_addresses;

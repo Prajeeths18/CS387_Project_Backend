@@ -115,7 +115,12 @@ async function update_details(restaurant_id,mobile_no,email,address,latitude,lon
     const queryUpdate2 = `INSERT INTO coordinates (latitude, longitude, gen_address) VALUES
      ($1,$2,$3) ON CONFLICT (latitude,longitude) DO NOTHING  `
 
-    const result = await db.transaction([queryRest,queryUpdate1,queryUpdate2],[[restaurant_id],[restaurant_id,mobile_no,email,latitude,overall_discount,max_safety_follow,open_time,close_time,longitude],[latitude,longitude,address]]).catch(e=>e);
+    let result;
+    if (address) {
+        result = await db.transaction([queryUpdate1,queryUpdate2],[[restaurant_id,mobile_no,email,latitude,overall_discount,max_safety_follow,open_time,close_time,longitude],[latitude,longitude,address]]).catch(e=>e);
+    } else {
+        result = await db.query(queryUpdate1, [restaurant_id,mobile_no,email,latitude,overall_discount,max_safety_follow,open_time,close_time,longitude]);
+    }
     return {result};
 
 }

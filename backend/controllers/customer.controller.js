@@ -83,6 +83,20 @@ async function update_address(req,res,next) {
     );
 }
 
+async function get_addresses(req, res, next) {
+    if((!req.user) || (!req.user.valid)) {
+        return res.sendStatus(500)
+    }
+    if(req.user.role !== 'CUSTOMER') {
+        return res.sendStatus(500)
+    }
+    res.json(
+        await customerModel.get_addresses(
+            req.user.user_id
+        )
+    );
+}
+
 async function order(req,res,next) {
     if((!req.user) || (!req.user.valid)) {
         return res.sendStatus(500)
@@ -203,6 +217,7 @@ exports.update = update;
 exports.add_address = add_address;
 exports.delete_address = delete_address;
 exports.update_address = update_address;
+exports.get_addresses = get_addresses;
 exports.restaurant_review = restaurant_review;
 exports.food_review = food_review;
 exports.delivery_review = delivery_review;
