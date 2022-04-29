@@ -39,7 +39,7 @@ async function add_item(req,res,next){
 async function update_details(req,res,next){
     res.json(
         await restaurantModel.update_details(
-            req.body,restaurant_id,
+            req.body.restaurant_id,
             req.body.mobile_no,
             req.body.email,
             req.body.address,
